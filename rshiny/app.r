@@ -403,11 +403,11 @@ ui <- fluidPage(
         fluidRow(
             column(2, selectInput("sInplace", "Placeness", c("-","Inplace","Outplace"),selected="Inplace")),
             column(2, selectInput("sComplex", "Complex", c("-","Complex","Real"), selected="Real")),
-            column(1, selectInput("sPrec", "Precision", c("-","float","double"), selected="-")),
+            column(1, selectInput("sPrec", "Precision", c("-","float","double","float16"), selected="-")),
             column(2, selectInput("sKind", "Kind", c("-","powerof2","radix357","oddshape"), selected="powerof2")),
             column(1, selectInput("sDim", "Dim", c("-","1","2","3"), selected="1")),
             column(2, selectInput("sXmetric", "xmetric", append(c("nbytes","id"),time_columns))),
-            column(2, selectInput("sYmetric", "ymetric", append(time_columns,c("Size_DeviceBuffer","Size_DevicePlan","Size_DeviceBuffer+Size_DevicePlan","Size_DeviceTransfer")), selected="Time_Total"))
+            column(2, selectInput("sYmetric", "ymetric", append(time_columns,c("Size_DeviceBuffer","Size_DevicePlan","Size_DeviceBuffer+Size_DevicePlan","Size_DeviceTransfer","Error_StandardDeviation","Error_Mismatches")), selected="Time_Total"))
         ),
         fluidRow(
             column(2, selectInput("sAes", "Inspect", c("-","inplace","flags","precision","dim","kind"), selected="precision")),

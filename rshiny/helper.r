@@ -48,11 +48,11 @@ open_gearshifft_csv <- function (i,fnames,flabels){
 
     }
 
-
     local_frame = local_frame %>%
         mutate( n_elements = ifelse(dim==1,nx, ifelse(dim==2,nx*ny, nx*ny*nz)) )
+    ## do not use %in% for ifelse here, otherwise mapping fails and nbytes are wrong due to "float16"
     local_frame = local_frame %>% mutate(
-        nbytes = ifelse("Complex" %in% complex,2,1)*ifelse("float" %in% precision,4,8)*n_elements,
+        nbytes = ifelse(complex=="Complex",2,1)*ifelse(precision=="float16",2,ifelse(precision=="double",8,4))*n_elements,
         hardware = gpu_model,
         flags = flags,
         architecture = ifelse(grepl("[a-zA-Z][1-9]-",gpu_model),"cpu","gpu"))
@@ -159,6 +159,8 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         ylabel <- paste0(args$ymetric,"_[ms]")
     else if(grepl("Size", args$ymetric))
         ylabel <- paste0(args$ymetric,"_[bytes]")
+    else if(grepl("Error", args$ymetric))
+        ylabel <- args$ymetric
     if(args$speedup)
         ylabel <- paste("Speedup of", args$ymetric)
 
@@ -236,13 +238,14 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
 
 ##############################################################################
                                         # extracting xmetric expression
-    if(grep(args$xmetric,data_colnames) == 0){
+
+    if(args$xmetric %in% data_colnames == FALSE){
 
         stop(paste(args$xmetric, "for x not found in available columns \n",data_colnames,"\n"))
     }
 
 
-    succeeded_xmetric_of_interest  <- succeeded %>% select(contains(args$xmetric))
+    succeeded_xmetric_of_interest  <- succeeded[args$xmetric]
     name_of_xmetric <- colnames(succeeded_xmetric_of_interest)[1]
     if(!is.null(xlabel)) {
 

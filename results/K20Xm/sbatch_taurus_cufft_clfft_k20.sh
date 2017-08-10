@@ -18,11 +18,11 @@ CURDIR=~/cuda-workspace/gearshifft
 RESULTSA=${CURDIR}/results/K20Xm/cuda-8.0.44
 RESULTSB=${CURDIR}/results/K20Xm/clfft-2.12.2
 
-FEXTENTS1D=$CURDIR/config/extents_1d_publication.conf
-FEXTENTS2D=$CURDIR/config/extents_2d_publication.conf
-FEXTENTS3D=$CURDIR/config/extents_3d_publication.conf
-#FEXTENTS=$CURDIR/config/extents_all_publication.conf
-FEXTENTS=${CURDIR}/config/extents_capped_all_publication.conf
+FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
+FEXTENTS2D=$CURDIR/share/gearshifft/extents_2d_publication.conf
+FEXTENTS3D=$CURDIR/share/gearshifft/extents_3d_publication.conf
+#FEXTENTS=$CURDIR/share/gearshifft/extents_all_publication.conf
+FEXTENTS=${CURDIR}/share/gearshifft/extents_capped_all_publication.conf
 
 # default is cuda 8.0.44
 if [ $k -eq 1 ]; then

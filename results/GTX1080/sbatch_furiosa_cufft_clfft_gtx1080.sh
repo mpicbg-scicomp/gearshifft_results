@@ -15,11 +15,11 @@ CURDIR=${HOME}/development/gearshifft
 RESULTSA=${CURDIR}/results/GTX1080/cuda-8.0.61
 RESULTSB=${CURDIR}/results/GTX1080/clfft-2.12.2
 
-FEXTENTS1D=$CURDIR/config/extents_1d_publication.conf
-FEXTENTS2D=$CURDIR/config/extents_2d_publication.conf
-FEXTENTS3D=$CURDIR/config/extents_3d_publication.conf
-#FEXTENTS=$CURDIR/config/extents_all_publication.conf
-FEXTENTS=${CURDIR}/config/extents_capped_all_publication.conf
+FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
+FEXTENTS2D=$CURDIR/share/gearshifft/extents_2d_publication.conf
+FEXTENTS3D=$CURDIR/share/gearshifft/extents_3d_publication.conf
+#FEXTENTS=$CURDIR/share/gearshifft/extents_all_publication.conf
+FEXTENTS=${CURDIR}/share/gearshifft/extents_capped_all_publication.conf
 
 module load cuda/8.0.61 clfft/2.12.2 fftw/3.3.6-pl1-brdw boost/1.63.0
 module unload gcc
