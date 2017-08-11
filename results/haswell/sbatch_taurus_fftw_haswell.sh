@@ -18,11 +18,11 @@ REL=$CURDIR/release
 RESULTS=$CURDIR/results/haswell/fftw3.3.6pl1
 mkdir -p ${RESULTS}
 
-FEXTENTS1D=$CURDIR/config/extents_1d_publication.conf
-FEXTENTS1DFFTW=$CURDIR/config/extents_1d_fftw.conf  # excluded a few very big ones
-FEXTENTS2D=$CURDIR/config/extents_2d_publication.conf
-FEXTENTS3D=$CURDIR/config/extents_3d_publication.conf
-FEXTENTS=$CURDIR/config/extents_all_publication.conf
+FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
+FEXTENTS1DFFTW=$CURDIR/share/gearshifft/extents_1d_fftw.conf  # excluded a few very big ones
+FEXTENTS2D=$CURDIR/share/gearshifft/extents_2d_publication.conf
+FEXTENTS3D=$CURDIR/share/gearshifft/extents_3d_publication.conf
+FEXTENTS=$CURDIR/share/gearshifft/extents_all_publication.conf
 
 
 if [ $k -eq 0 ]; then
@@ -36,13 +36,13 @@ elif [ $k -eq 2 ]; then
     srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS3D -o $RESULTS/fftw_estimate_gcc5.3.0_RHEL6.8.3d.csv --rigor estimate
 
 elif [ $k -eq 3 ]; then
-    srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS1DFFTW -o $RESULTS/fftw_wisdom_gcc5.3.0_RHEL6.8.1d.csv --rigor wisdom --wisdom_sp ./config/fftwf_wisdom_3.3.6-pl1.txt --wisdom_dp ./config/fftw_wisdom_3.3.6-pl1.txt
+    srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS1DFFTW -o $RESULTS/fftw_wisdom_gcc5.3.0_RHEL6.8.1d.csv --rigor wisdom --wisdom_sp $CURDIR/share/gearshifft/fftwf_wisdom_3.3.6-pl1.txt --wisdom_dp $CURDIR/share/gearshifft/fftw_wisdom_3.3.6-pl1.txt
 
 elif [ $k -eq 4 ]; then
-    srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS2D -o $RESULTS/fftw_wisdom_gcc5.3.0_RHEL6.8.2d.csv --rigor wisdom --wisdom_sp ./config/fftwf_wisdom_3.3.6-pl1.txt --wisdom_dp ./config/fftw_wisdom_3.3.6-pl1.txt
+    srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS2D -o $RESULTS/fftw_wisdom_gcc5.3.0_RHEL6.8.2d.csv --rigor wisdom --wisdom_sp $CURDIR/share/gearshifft/fftwf_wisdom_3.3.6-pl1.txt --wisdom_dp $CURDIR/share/gearshifft/fftw_wisdom_3.3.6-pl1.txt
 
 elif [ $k -eq 5 ]; then
-    srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS3D -o $RESULTS/fftw_wisdom_gcc5.3.0_RHEL6.8.3d.csv --rigor wisdom --wisdom_sp ./config/fftwf_wisdom_3.3.6-pl1.txt --wisdom_dp ./config/fftw_wisdom_3.3.6-pl1.txt
+    srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS3D -o $RESULTS/fftw_wisdom_gcc5.3.0_RHEL6.8.3d.csv --rigor wisdom --wisdom_sp $CURDIR/share/gearshifft/fftwf_wisdom_3.3.6-pl1.txt --wisdom_dp $CURDIR/share/gearshifft/fftw_wisdom_3.3.6-pl1.txt
 
 #elif [ $k -eq 6 ]; then
 #     srun --cpu-freq=medium $REL/gearshifft_fftw -f $FEXTENTS1D -o $RESULTS/fftw_gcc5.3.0_RHEL6.8.1d.csv # takes too long, >7d

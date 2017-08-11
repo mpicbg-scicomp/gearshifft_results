@@ -18,6 +18,6 @@ CURDIR=~/cuda-workspace/gearshifft
 RESULTS=${CURDIR}/results/haswell/clfft-2.12.2
 mkdir -p ${RESULTS}
 
-FEXTENTS=${CURDIR}/config/extents_all_publication.conf
+FEXTENTS=${CURDIR}/share/gearshifft/extents_all_publication.conf
 
 srun --cpu-freq=medium ${CURDIR}/release/gearshifft_clfft -f $FEXTENTS -d cpu -o $RESULTS/clfft_gcc5.3.0_RHEL6.8.csv

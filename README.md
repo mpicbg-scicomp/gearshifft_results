@@ -9,7 +9,7 @@ This repository provides the benchmark results of different combinations as show
 | --- | --- | --- | --- |
 | haswell | 3.3.6pl1 | - | 2.12.2 |
 | P100    | - | 8.0.61 | 2.12.2 |
-| -       | - | 9.0.69-EA | - |
+| -       | - | 9.0.69-RC | - |
 | GTX1080 | - | 8.0.61 | 2.12.2 |
 | K80     | - | 8.0.44 | 2.12.2 |
 | K20Xm   | - | 8.0.44 | 2.12.2 |
@@ -28,7 +28,7 @@ The results obtained with [gearshifft](https://github.com/mpicbg-scicomp/gearshi
 
 ## Online R-Shiny App
 
-[**=> Go to the online data analysis tool**!](http://v22017054645049618.nicesrv.de/gearshifft/)
+[**=> Go to the online data analysis tool**!](https://www.kcod.de/gearshifft/)
 
 ## Local R-Shiny App
 
@@ -46,11 +46,13 @@ Things like the port number and errors are shown in the output where the server 
 
 Note: If you change the helper.r, a simple reload of the web application does not help. rshiny checks only app.r and recaches when app.r has been changed.
 
-## R-Shiny Server (Linux, systemd)
+## R-Shiny Server (Linux, systemd, nginx)
 
 You also can run your own [shiny-server](https://www.rstudio.com/products/shiny/download-server/) application. 
 If you run Arch Linux, take this AUR [package](https://aur.archlinux.org/packages/shiny-server-git/).
 By the way, With shiny-server it is also possible to host interactive Rmarkdown documents.
+
+Check [etc/] for the nginx with https ([letsencrypt](https://letsencrypt.org/)) and shiny-server configuration files. The following guide only covers the http path.
 
 Some parts of this guide come from the [admin guide](http://docs.rstudio.com/shiny-server/) and [this howto](http://deanattali.com/2015/05/09/setup-rstudio-shiny-server-digital-ocean/). For SSL, check [this howto](https://qualityandinnovation.com/2015/12/09/deploying-your-very-own-shiny-server/).
 

@@ -4,10 +4,10 @@
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
 #SBATCH --time=6:00:00
-#SBATCH --mem=62000M # gpu2
+#SBATCH --mem=120000M # gpu2
 #SBATCH --partition=test
 #SBATCH --exclusive
-#SBATCH --array 1-3
+#SBATCH --array 4
 #SBATCH -o slurmgpu2_array-%A_%a.out
 #SBATCH -e slurmgpu2_array-%A_%a.err
 
@@ -17,12 +17,13 @@ CURDIR=~/cuda-workspace/gearshifft
 RESULTSA=${CURDIR}/results/P100-PCIE-16GB/cuda-8.0.61
 RESULTSB=${CURDIR}/results/P100-PCIE-16GB/clfft-2.12.2
 RESULTSC=${CURDIR}/results/P100-PCIE-16GB/cuda-9.0.69-beta
+RESULTSD=${CURDIR}/results/P100-PCIE-16GB/cuda-9.0.69-rc
 
-# FEXTENTS1D=$CURDIR/config/extents_1d_publication.conf
-# FEXTENTS2D=$CURDIR/config/extents_2d_publication.conf
-# FEXTENTS3D=$CURDIR/config/extents_3d_publication.conf
-# FEXTENTS=$CURDIR/config/extents_all_publication.conf
-FEXTENTS=${CURDIR}/config/extents_capped_all_publication.conf
+# FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
+# FEXTENTS2D=$CURDIR/share/gearshifft/extents_2d_publication.conf
+# FEXTENTS3D=$CURDIR/share/gearshifft/extents_3d_publication.conf
+# FEXTENTS=$CURDIR/share/gearshifft/extents_all_publication.conf
+FEXTENTS=${CURDIR}/share/gearshifft/extents_capped_all_publication.conf
 
 module purge
 export CUDA_VISIBLE_DEVICES=0
@@ -46,6 +47,13 @@ if [ $k -eq 3 ]; then
     $CURDIR/release/gearshifft_clfft -l
     mkdir -p ${RESULTSB}
     srun --cpu-freq=medium --gpufreq=715:1189 $CURDIR/release_t1/gearshifft_clfft -d gpu -f $FEXTENTS -o $RESULTSB/clfft_gcc5.3.0_CentOS7.3.csv
+fi
+if [ $k -eq 4 ]; then
+    module load boost/1.60.0-gnu5.3-intelmpi5.1 gdb git cmake
+    ldd $CURDIR/release_t1_cuda9/gearshifft_cufft
+    $CURDIR/release_t1_cuda9/gearshifft_cufft -l
+    mkdir -p ${RESULTSD}
+    srun --cpu-freq=medium --gpufreq=715:1189 $CURDIR/release_t1_cuda9/gearshifft_cufft -f $FEXTENTS -o $RESULTSD/cufft_gcc5.3.0_CentOS7.3.csv
 fi
 
 nvidia-smi
