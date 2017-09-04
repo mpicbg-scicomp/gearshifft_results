@@ -13,9 +13,9 @@
 
 k=$SLURM_ARRAY_TASK_ID
 
-CURDIR=~/cuda-workspace/gearshifft
+CURDIR=$HOME/cuda-workspace/gearshifft
 REL=$CURDIR/release
-RESULTS=$CURDIR/results/haswell/fftw3.3.6pl1
+RESULTS=$HOME/cuda-workspace/gearshifft_results/results/haswell/fftw3.3.6pl1
 mkdir -p ${RESULTS}
 
 FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
@@ -24,6 +24,9 @@ FEXTENTS2D=$CURDIR/share/gearshifft/extents_2d_publication.conf
 FEXTENTS3D=$CURDIR/share/gearshifft/extents_3d_publication.conf
 FEXTENTS=$CURDIR/share/gearshifft/extents_all_publication.conf
 
+module purge
+module load opencl boost/1.60.0-gnu5.3-intelmpi5.1 clFFT/2.12.2-cuda8.0-gcc5.3 fftw/3.3.6pl1-gcc5.3-intelmpi5.1 gcc/5.3.0 cuda/8.0.61 cmake
+module unload mpirt
 
 if [ $k -eq 0 ]; then
 #   srun $REL/gearshifft_fftw -f $FEXTENTS1D -o $RESULTS/fftw_estimate_gcc5.3.0_RHEL6.8.1d.csv --rigor estimate # got killed by OS (OOM error)

@@ -255,7 +255,9 @@ server <- function(input, output, session) {
                         bins = input$sHistBins,
                         usepoints = usepoints,
                         usepointsraw = usepointsraw,
-                        noerrorbar = noerrorbar
+                        noerrorbar = noerrorbar,
+                        xlimit = input$sXlimit,
+                        ylimit = input$sYlimit
                         )
     })
 
@@ -317,7 +319,7 @@ server <- function(input, output, session) {
         if(input$sPlotType == "Histogram")
             p("Histograms help to analyze data of the validation code.", HTML("<ul><li>Use Time_* as xmetric for the x axis.</li><li>Probably better to disable log-scaling</li><li>If you do not see any curves then disable some filters.</li></ul>"))
         else if(input$sPlotType == "Lines")
-            p("Lines are drawn by the averages including error bars.", HTML("<ul><li>If you see jumps then you should enable more filters or use the 'Inspect' option.</li><li>Points are always drawn when the degree of freedom in the diagram is greater than 2.</li><li>no error bars are shown when speedup option is enabled (speedup is computed on the averages)</ul>"))
+            p("Lines are drawn by the averages including error bars.", HTML("<ul><li>If you see jumps then you should enable more filters or use the 'Inspect' option.</li><li>Points are always drawn when the degree of freedom in the diagram is greater than 2.</li><li>no error bars are shown when speedup option is enabled (speedup is computed on the averages)</li><li>when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)</li></ul>"))
         else if(input$sPlotType == "Points")
             p("This plot type allows to analyze the raw data by plotting each measure point. It helps analyzing the results of the validation code.")
 
@@ -406,7 +408,7 @@ ui <- fluidPage(
             column(1, selectInput("sPrec", "Precision", c("-","float","double","float16"), selected="-")),
             column(2, selectInput("sKind", "Kind", c("-","powerof2","radix357","oddshape"), selected="powerof2")),
             column(1, selectInput("sDim", "Dim", c("-","1","2","3"), selected="1")),
-            column(2, selectInput("sXmetric", "xmetric", append(c("nbytes","id"),time_columns))),
+            column(2, selectInput("sXmetric", "xmetric", append(c("nbytes","id","n_elements"),time_columns))),
             column(2, selectInput("sYmetric", "ymetric", append(time_columns,c("Size_DeviceBuffer","Size_DevicePlan","Size_DeviceBuffer+Size_DevicePlan","Size_DeviceTransfer","Error_StandardDeviation","Error_Mismatches")), selected="Time_Total"))
         ),
         fluidRow(
@@ -430,6 +432,8 @@ ui <- fluidPage(
                          column(3, selectInput("sPlotType", "Plot type", c("Lines","Histogram","Points"), selected="Lines")),
                          column(1, selectInput("sLogx", "Log-X", c("-","2","10"), selected="2")),
                          column(1, selectInput("sLogy", "Log-Y", c("-","2","10"), selected="10")),
+                         column(1, textInput("sXlimit", "x-range", "0,0")),
+                         column(1, textInput("sYlimit", "y-range", "0,0")),
                          column(1, checkboxInput("sNotitle", "Disable Title")),
                          uiOutput("sPlotOptions")
                      ),
@@ -466,3 +470,4 @@ ui <- fluidPage(
 ## will look for ui.R and server.R when reloading browser page, so you have to run
 ## R -e "shiny::runApp('~/shinyapp')"
 shinyApp(ui = ui, server = server)
+
