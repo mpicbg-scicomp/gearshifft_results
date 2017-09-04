@@ -147,6 +147,8 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         xlabel <- 'id'
     else if(args$xmetric=="nbytes")
         xlabel <- "Signal_Size_[bytes]"
+    else if(args$xmetric=="n_elements")
+        xlabel <- "Number_Elements"
     else
         xlabel <- args$xmetric
     
@@ -238,14 +240,13 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
 
 ##############################################################################
                                         # extracting xmetric expression
-
-    if(args$xmetric %in% data_colnames == FALSE){
+    if(any(grepl(paste0("^",args$xmetric),data_colnames)) == FALSE){
 
         stop(paste(args$xmetric, "for x not found in available columns \n",data_colnames,"\n"))
     }
 
 
-    succeeded_xmetric_of_interest  <- succeeded[args$xmetric]
+    succeeded_xmetric_of_interest  <- succeeded[grepl(paste0("^",args$xmetric),data_colnames)]
     name_of_xmetric <- colnames(succeeded_xmetric_of_interest)[1]
     if(!is.null(xlabel)) {
 

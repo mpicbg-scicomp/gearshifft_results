@@ -9,13 +9,13 @@
 #SBATCH --exclusive
 
 module purge
-module load boost/1.60.0-gnu5.3-intelmpi5.1
-module load clFFT/2.12.2-cuda8.0-gcc5.3
+module load opencl boost/1.60.0-gnu5.3-intelmpi5.1 clFFT/2.12.2-cuda8.0-gcc5.3
+module unload mpirt
 module list
 
-CURDIR=~/cuda-workspace/gearshifft
+CURDIR=$HOME/cuda-workspace/gearshifft
 
-RESULTS=${CURDIR}/results/haswell/clfft-2.12.2
+RESULTS=$HOME/cuda-workspace/gearshifft_results/results/haswell/clfft-2.12.2
 mkdir -p ${RESULTS}
 
 FEXTENTS=${CURDIR}/share/gearshifft/extents_all_publication.conf
