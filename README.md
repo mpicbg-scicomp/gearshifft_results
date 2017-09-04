@@ -11,8 +11,8 @@ This repository provides the benchmark results of different combinations as show
 | P100    | - | 8.0.61 | 2.12.2 |
 | -       | - | 9.0.69-RC | - |
 | GTX1080 | - | 8.0.61 | 2.12.2 |
-| K80     | - | 8.0.44 | 2.12.2 |
-| K20Xm   | - | 8.0.44 | 2.12.2 |
+| K80     | - | 8.0.61 | 2.12.2 |
+| K20Xm   | - | 8.0.61 | 2.12.2 |
 
 
 # R-Shiny Script for R driven gearshifft Data Analysis
