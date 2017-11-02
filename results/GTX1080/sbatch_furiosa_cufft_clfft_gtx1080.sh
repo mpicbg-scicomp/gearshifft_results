@@ -5,6 +5,7 @@
 #SBATCH --time=10:00:00
 #SBATCH --mem=128000M # gpu2
 #SBATCH --partition=gpu
+#SBATCH --gres=gpu:1
 #SBATCH --array 1-2
 #SBATCH -o gearshifft-gtx1080_array-%A_%a.out
 #SBATCH -e gearshifft-gtx1080_array-%A_%a.err
@@ -28,11 +29,11 @@ module load gcc/5.3.0
 # default is cuda 8.0.44
 if [ $k -eq 1 ]; then
     mkdir -p ${RESULTSA}
-    srun $CURDIR/build-brdw/gearshifft_cufft -f $FEXTENTS -o $RESULTSA/cufft_gcc5.3.0_centos7.2.csv
+    srun $CURDIR/build/gearshifft_cufft -f $FEXTENTS -o $RESULTSA/cufft_gcc5.3.0_centos7.2.csv
 fi
 if [ $k -eq 2 ]; then
     mkdir -p ${RESULTSB}
-    srun  $CURDIR/build-brdw/gearshifft_clfft -f $FEXTENTS -o $RESULTSB/clfft_gcc5.3.0_centos7.2.csv
+    srun  $CURDIR/build/gearshifft_clfft -f $FEXTENTS -o $RESULTSB/clfft_gcc5.3.0_centos7.2.csv
 fi
 
 module list
