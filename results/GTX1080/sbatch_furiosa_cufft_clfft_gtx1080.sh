@@ -12,7 +12,8 @@
 
 k=$SLURM_ARRAY_TASK_ID
 
-CURDIR=${HOME}/development/gearshifft
+CURDIR=${HOME}/development/gearshifft_results
+APPROOT=${HOME}/development/gearshifft
 RESULTSA=${CURDIR}/results/GTX1080/cuda-8.0.61
 RESULTSB=${CURDIR}/results/GTX1080/clfft-2.12.2
 
@@ -29,11 +30,11 @@ module load gcc/5.3.0
 # default is cuda 8.0.44
 if [ $k -eq 1 ]; then
     mkdir -p ${RESULTSA}
-    srun $CURDIR/build/gearshifft_cufft -f $FEXTENTS -o $RESULTSA/cufft_gcc5.3.0_centos7.2.csv
+    srun $APPROOT/build/gearshifft_cufft -f $FEXTENTS -o $RESULTSA/cufft_gcc5.3.0_centos7.2.csv
 fi
 if [ $k -eq 2 ]; then
     mkdir -p ${RESULTSB}
-    srun  $CURDIR/build/gearshifft_clfft -f $FEXTENTS -o $RESULTSB/clfft_gcc5.3.0_centos7.2.csv
+    srun  $APPROOT/build/gearshifft_clfft -f $FEXTENTS -o $RESULTSB/clfft_gcc5.3.0_centos7.2.csv
 fi
 
 module list
