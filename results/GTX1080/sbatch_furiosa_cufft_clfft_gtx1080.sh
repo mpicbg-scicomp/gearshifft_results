@@ -21,13 +21,27 @@ FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
 FEXTENTS2D=$CURDIR/share/gearshifft/extents_2d_publication.conf
 FEXTENTS3D=$CURDIR/share/gearshifft/extents_3d_publication.conf
 #FEXTENTS=$CURDIR/share/gearshifft/extents_all_publication.conf
-FEXTENTS=${CURDIR}/share/gearshifft/extents_capped_all_publication.conf
+FEXTENTS=${APPROOT}/share/gearshifft/extents_capped_all_publication.conf
 
 module load cuda/8.0.61 clfft/2.12.2 fftw/3.3.6-pl1-brdw boost/1.63.0
 module unload gcc
 module load gcc/5.3.0
 
-# default is cuda 8.0.44
+if [[ -z ${FEXTENTS} ]];
+then
+echo "uups, ${FEXTENTS} is empty"
+fi
+
+if [[ ! -e ${FEXTENTS} ]];
+then
+echo "uups, ${FEXTENTS} does not exist"
+else
+echo "running benchmarks from configuration" `ls $FEXTENTS`
+fi
+
+
+echo -e "results stored to \n->$RESULTSA/cufft_gcc5.3.0_centos7.2.csv\n->$RESULTSB/clfft_gcc5.3.0_centos7.2.csv"
+# default is cuda 8.0.61
 if [ $k -eq 1 ]; then
     mkdir -p ${RESULTSA}
     srun $APPROOT/build/gearshifft_cufft -f $FEXTENTS -o $RESULTSA/cufft_gcc5.3.0_centos7.2.csv
