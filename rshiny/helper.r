@@ -76,14 +76,18 @@ get_gearshifft_data <- function(fnames,flabels) {
 ## fftw: 1|2, ..
 ## clfft: 2|3, 4|5, ..
 get_gearshifft_header <- function(fname) {
+    first_line <- readLines(file(fname,"r"),n=1)
     h <- read.csv(fname, sep=",", header=F, nrows=3)
     hidx <- 2*(1:(length( h[1,] )/2))
-    if( grepl("cuda", fname) )
+    
+    if( grepl("CUDA", first_line) )
         table1 <- cbind(t(cbind(V1="Device",h[1, hidx])), t(as.vector(h[1, c(1,hidx+1)])))
-    if( grepl("fftw", fname) )
+    else if( grepl("PlanRigor", first_line) )
         table1 <- cbind(t(h[1, hidx-1]), t(h[1, hidx]))
-    if( grepl("clfft", fname) )
+    else if( grepl("ClFFT", first_line) )
         table1 <- cbind(t(h[1, hidx]), t(h[1, hidx+1]))
+    else
+      stop("Could not detect which FFT library is used.")
     colnames(table1) <- c("Key", "Value")
     table1[1,] <- gsub(";","",table1[1,])
     table2 <- gsub(";","", as.matrix(h[2:3,1:2]))
@@ -196,6 +200,10 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         succeeded <- succeeded %>% filter(dim == filter_dim)
         cat("filtered for ndims == ",filter_dim,": \t",nrow(succeeded),"\n")
         filtered_by <- c(filtered_by, paste(filter_dim,"D",sep=""))
+    }
+    if( args$speedup && nchar(filter_prec)==0 ) {
+        succeeded <- succeeded %>% filter(precision != "float16")
+
     }
 ##############################################################################
     data_colnames = colnames(succeeded)

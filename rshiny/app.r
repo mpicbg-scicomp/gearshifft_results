@@ -366,6 +366,7 @@ ui <- fluidPage(
                                                "k80"="K80",
                                                "gtx1080"="GTX1080",
                                                "p100"="P100",
+                                               "v100"="V100",
                                                "haswell"="haswell"),
                                              inline=T
                                              )),
@@ -385,6 +386,7 @@ ui <- fluidPage(
                                                "k80"="K80",
                                                "gtx1080"="GTX1080",
                                                "p100"="P100",
+                                               "v100"="V100",
                                                "haswell"="haswell"),
                                              inline=T
                                              )),
