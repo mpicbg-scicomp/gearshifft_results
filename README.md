@@ -8,12 +8,14 @@ This repository provides the benchmark results of different combinations as show
 | arch | fftw | cufft | clfft |
 | --- | --- | --- | --- |
 | haswell | 3.3.6pl1 | - | 2.12.2 |
-| P100    | - | 8.0.61 | 2.12.2 |
-| -       | - | 9.0.69-RC | - |
+| P100    | - | 9.x | 2.12.2 |
+| V100    | - | 9.x | 2.12.2 |
+| GV100   | - | 9.x | 2.12.2 |
 | GTX1080 | - | 8.0.61 | 2.12.2 |
 | K80     | - | 8.0.61 | 2.12.2 |
 | K20Xm   | - | 8.0.61 | 2.12.2 |
 
+cufft 9.x refers to cufft/CUDA 9.0.176, 9.1.85, 9.2.88.
 
 # R-Shiny Script for R driven gearshifft Data Analysis
 
@@ -75,6 +77,7 @@ for i in ggplot2 dplyr plyr readr DT shiny; do
  sudo su - -c "R -q -e \"install.packages('$i', repos='http://cran.rstudio.com/')\""
 done
 ```
+(After system update packages may need to be recompiled/reinstalled.)
 
 - install shiny-server
 
