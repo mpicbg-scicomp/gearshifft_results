@@ -411,7 +411,7 @@ ui <- fluidPage(
             column(2, selectInput("sYmetric", "ymetric", append(time_columns,c("Size_DeviceBuffer","Size_DevicePlan","Size_DeviceBuffer+Size_DevicePlan","Size_DeviceTransfer","Error_StandardDeviation","Error_Mismatches")), selected="Time_Total"))
         ),
         fluidRow(
-            column(2, selectInput("sAes", "Inspect", c("-","inplace","flags","precision","dim","kind"), selected="precision")),
+            column(2, selectInput("sAes", "Inspect", c("-","inplace","precision","dim","kind"), selected="precision")),
             column(2, selectInput("sRun", "Run", c("-","Success", "Warmup"), selected="Success")),
             column(2, checkboxInput("sYRatio","Ratio Total Time")),
             column(2, checkboxInput("sSpeedup","Speedup"))

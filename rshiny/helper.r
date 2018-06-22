@@ -4,58 +4,73 @@ library(plyr)
 library(dplyr)
 library(scales)
 
+## cuda: 1 dev, 2|3, 4|5, ..
+## fftw: 1|2, ..
+## clfft: 2|3, 4|5, ..
+get_gearshifft_header <- function(fname) {
+    first_line <- readLines(file(fname,"r"),n=1)
+    h <- read.csv(fname, sep=",", header=F, nrows=3)
+    hidx <- 2*(1:(length( h[1,] )/2))
+    
+    if( grepl("ClFFT", first_line) ) {
+        table1 <- cbind(t(h[1, hidx]), t(h[1, hidx+1]))
+        table1 <- rbind(table1, c(".library", "clfft"))
+        if(grepl("CPU", table1[1,2])) {
+            table1 <- rbind(table1, c(".arch", "cpu"))
+        } else {
+            table1 <- rbind(table1, c(".arch", "gpu")) # assume GPU (todo: more meta data in results)
+        }
+    } else if( grepl("PlanRigor", first_line) ) {
+        table1 <- cbind(t(h[1, hidx-1]), t(h[1, hidx]))
+        table1 <- rbind(table1, c(".library", "fftw"))
+        table1 <- rbind(table1, c(".arch", "cpu"))
+        table1 <- rbind(c("Device","CPU"), table1)
+    } else if( grepl("CUDA", first_line) ) {
+        table1 <- cbind(t(cbind(V1="Device",h[1, hidx])), t(as.vector(h[1, c(1,hidx+1)])))
+        table1 <- rbind(table1, c(".library", "cufft"))
+        table1 <- rbind(table1, c(".arch", "gpu"))
+    }
+    else
+        stop("Could not detect which FFT library is used.")
+
+    colnames(table1) <- c("Key", "Value")
+    table1[1:2,] <- gsub(";","",table1[1:2,])
+    table2 <- gsub(";","", as.matrix(h[2:3,1:2]))
+    colnames(table2) <- c("Timer", "Time")
+    rownames(table1)<-table1[,1]
+    rownames(table2)<-table2[,1]
+    table1[,2] <- trimws(table1[,2])
+    header <- list(table1=table1, table2=table2)
+    return(header)
+}
 
 open_gearshifft_csv <- function (i,fnames,flabels){
     fname<-fnames[i]
-    #extracting measurements
+    # extracting header
+    header <<- get_gearshifft_header(fname)
+    arch <- header$table1['.arch',2]
+    device <- header$table1['Device',2]
+    library <- header$table1['.library',2]
+    flags <- "none"
+    hardware <- device # paste0(device, " (", library, ")")
+    if( arch=="cpu" && library=="clfft" )
+        hardware <- paste0(device, " ", header$table1["UsedComputeUnits",2], "x (", library, ")")
+    if( library=="fftw" ) {
+        flags <- header$table1["PlanRigor",2] 
+        hardware <- paste0(device, " ", header$table1["UsedThreads",2], "x (", library, " ", flags,")")
+    }
+    # extracting measurements
     local_frame <- read_csv(fname,skip=3,col_names=TRUE)
     colnames(local_frame) <- gsub(' ','_',colnames(local_frame))
     local_frame$.file_id <- i
-    #extracting card info
-    lines <- readLines(fname)
-    line_1 = lines[[1]]
-    line_1 <- gsub(' "','',line_1)
-    line_1 <- gsub('"','',line_1)
-    line_1 <- gsub(';','',line_1)
-
-    line_1_splited <- strsplit(line_1,",")
-    gpu_model <- ""
-    nrw <- nrow(local_frame)
-
-    if(grepl("clfft", line_1_splited[[1]][1], ignore.case = TRUE)){
-        if(grepl("CPU", line_1_splited[[1]][3], ignore.case = TRUE)){
-            gpu_model <- paste("E5-2680v3 ",line_1_splited[[1]][11],"x (clFFT)",sep="") # make it equal to fftw hardware when cpu E5 is used
-        } else {
-            gpu_model <- line_1_splited[[1]][3]
-        }
-        flags = "None"
-        cat("THIS IS",local_frame$library[1],gpu_model,"\twith ",nrw,"\n")
-    } else {
-
-        if(grepl("CUDA Runtime", line_1, ignore.case = TRUE)) {
-            gpu_model <- line_1_splited[[1]][1]
-            flags = "None"
-            cat("THIS IS",local_frame$library[1],gpu_model,"\twith ",nrw,"\n")
-
-        }
-
-        if(grepl("SupportedThreads", line_1, ignore.case = TRUE)) {
-            gpu_model <- paste("E5-2680v3 ",line_1_splited[[1]][4],"x (fftw)",sep="")
-            flags = paste("fftw-",gsub("_","-",line_1_splited[[1]][8]),sep="")
-            cat("THIS IS",local_frame$library[1],gpu_model,"\twith ",nrw,"(",flags,")\n")
-
-        }
-
-    }
 
     local_frame = local_frame %>%
         mutate( n_elements = ifelse(dim==1,nx, ifelse(dim==2,nx*ny, nx*ny*nz)) )
     ## do not use %in% for ifelse here, otherwise mapping fails and nbytes are wrong due to "float16"
     local_frame = local_frame %>% mutate(
         nbytes = ifelse(complex=="Complex",2,1)*ifelse(precision=="float16",2,ifelse(precision=="double",8,4))*n_elements,
-        hardware = gpu_model,
-        flags = flags,
-        architecture = ifelse(grepl("[a-zA-Z][1-9]-",gpu_model),"cpu","gpu"))
+        hardware = hardware,
+        architecture = arch)
 
     local_frame = local_frame %>% mutate( library = tolower(library))
 
@@ -70,30 +85,6 @@ open_gearshifft_csv <- function (i,fnames,flabels){
 get_gearshifft_data <- function(fnames,flabels) {
     result <- ldply(seq_along(fnames), .fun=open_gearshifft_csv, fnames=fnames, flabels=flabels)
     return(result)
-}
-
-## cuda: 1 dev, 2|3, 4|5, ..
-## fftw: 1|2, ..
-## clfft: 2|3, 4|5, ..
-get_gearshifft_header <- function(fname) {
-    first_line <- readLines(file(fname,"r"),n=1)
-    h <- read.csv(fname, sep=",", header=F, nrows=3)
-    hidx <- 2*(1:(length( h[1,] )/2))
-    
-    if( grepl("CUDA", first_line) )
-        table1 <- cbind(t(cbind(V1="Device",h[1, hidx])), t(as.vector(h[1, c(1,hidx+1)])))
-    else if( grepl("PlanRigor", first_line) )
-        table1 <- cbind(t(h[1, hidx-1]), t(h[1, hidx]))
-    else if( grepl("ClFFT", first_line) )
-        table1 <- cbind(t(h[1, hidx]), t(h[1, hidx+1]))
-    else
-      stop("Could not detect which FFT library is used.")
-    colnames(table1) <- c("Key", "Value")
-    table1[1,] <- gsub(";","",table1[1,])
-    table2 <- gsub(";","", as.matrix(h[2:3,1:2]))
-    colnames(table2) <- c("Timer", "Time")
-    header <- list(table1=table1, table2=table2)
-    return(header)
 }
 
 get_args_default <- function() {
@@ -322,7 +313,11 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
     tables$name_of_xmetric <- name_of_xmetric
     tables$name_of_ymetric <- name_of_ymetric
     if( args$notitle == F ) {
-        tables$title <- paste("filtered by:",paste(filtered_by,collapse=" "))
+        tables$hardware <- succeeded_reduced %>% distinct(hardware) %>% pull()
+        tables$hardware <- paste0(tables$hardware, collapse=" vs. ")
+        
+        tables$title <- paste("Filtered by:",paste(filtered_by,collapse=", "))
+        tables$title <- paste(tables$hardware, "|", tables$title)
     } else {
         tables$title <- ""
     }
@@ -374,6 +369,9 @@ plot_gearshifft <- function(tables,
                                  legend.key.width = unit(1.1, "cm")
                                  )
 
+    ## if(nchar(tables$label)>0)
+    ##     aesthetics <- sub("library", "label", aesthetics)
+##    cat(aesthetics)
     aesthetics_from_cli <- strsplit(aesthetics,",")[[1]]
 
     aesthetics_keys   <- c("colour","linetype","shape")
