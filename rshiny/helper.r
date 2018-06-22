@@ -289,6 +289,8 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         summarize( moi_mean = mean(ymoi),
                   moi_median = median(ymoi),
                   moi_stddev = sd(ymoi)
+                  moi_quantile25 = quantile(ymoi,.25)
+                  moi_quantile75 = quantile(ymoi,.75)
                   )
 
 #### data2$y(x)/data1$y(x)
@@ -303,9 +305,13 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
             dfp$moi_mean <- d2$moi_mean / dfp$moi_mean
             dfp$moi_median <- d2$moi_median / dfp$moi_median
             dfp$moi_stddev <- 0
+            dfp$moi_quantile25 <- 0
+            dfp$moi_quantile75 <- 0
             d2$moi_mean <- 1
             d2$moi_median <- 1
             d2$moi_stddev <- 0
+            d2$moi_quantile25 <- 0
+            d2$moi_quantile75 <- 0
             data_for_plotting <- bind_rows(dfp,d2) %>% na.omit()
         }
     }
@@ -414,13 +420,13 @@ plot_gearshifft <- function(tables,
                            ##     linetype=hardware)
                            aesthetics_to_use
                            )
-        moi_plot <- moi_plot + geom_line(aes(y=moi_mean),size=1)
+        moi_plot <- moi_plot + geom_line(aes(y=moi_median),size=1)
         if( usepoints ) {
-            moi_plot <- moi_plot + geom_point(aes(y=moi_mean),size=3)
+            moi_plot <- moi_plot + geom_point(aes(y=moi_median),size=3)
         }
         if( noerrorbar == FALSE ) {
-            moi_plot <- moi_plot + geom_errorbar(aes(ymin = moi_mean - moi_stddev,
-                                                     ymax = moi_mean + moi_stddev),
+            moi_plot <- moi_plot + geom_errorbar(aes(ymin = moi_quantile25,
+                                                     ymax = moi_quantile75),
                                                  width=0.25, linetype =1)
         }
                                         #moi_plot <- moi_plot + scale_color_manual(name = "", values = c("red", 'blue'),labels=?)
@@ -476,8 +482,8 @@ plot_gearshifft <- function(tables,
     xmin <- min(data_for_plotting$xmoi)
     xmax <- max(data_for_plotting$xmoi)
 
-    ymin <- min(data_for_plotting$moi_mean)
-    ymax <- max(data_for_plotting$moi_mean)
+    ymin <- min(data_for_plotting$moi_median)
+    ymax <- max(data_for_plotting$moi_median)
 
 
     if(logy_value > 1) {
