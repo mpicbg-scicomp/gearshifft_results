@@ -271,19 +271,19 @@ server <- function(input, output, session) {
         input_files <- get_input_files(input)
         header <- get_gearshifft_header( input_files[1] )
         output$table1 <- renderTable({
-            header$table1
+            key_value_list_to_table(header$table1)
         })
         output$table2 <- renderTable({
-            header$table2
+            key_value_list_to_table(header$table2)
         })
 
         if(length(input_files)>1) {
             header2 <- get_gearshifft_header( input_files[2] )
             output$table3 <- renderTable({
-                header2$table1
+                key_value_list_to_table(header2$table1)
             })
             output$table4 <- renderTable({
-                header2$table2
+                key_value_list_to_table(header2$table2)
             })
             wellPanel(
                 br(),

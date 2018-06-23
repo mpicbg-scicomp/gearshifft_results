@@ -4,65 +4,99 @@ library(plyr)
 library(dplyr)
 library(scales)
 
+## header with meta information about results
+headers<-list()
+
+create_key_value_list <- function(keys, values) {
+    keys <- as.vector(keys)
+    values <- as.vector(values)
+    if(is.null(dim(keys))==FALSE && dim(keys)[2]>1)
+        keys <- t(keys)
+    if(is.null(dim(values))==FALSE && dim(values)[2]>1)
+        values <- t(values)
+    result <- trimws(gsub(";","",values))
+    names(result) <- trimws(gsub(";","",keys))
+    result <- as.list(result);
+    return(result)
+
+}
+
+key_value_list_to_table <- function( input ) {
+    result <- as.matrix( cbind(names(input), unlist(input)) )
+    colnames(result) <- c("Key", "Value")
+    return(result)
+}
+
 ## cuda: 1 dev, 2|3, 4|5, ..
 ## fftw: 1|2, ..
 ## clfft: 2|3, 4|5, ..
 get_gearshifft_header <- function(fname) {
-    first_line <- readLines(file(fname,"r"),n=1)
+    con <- file(fname,"r")
+    first_line <- readLines(con,n=1)
+    close(con)
     h <- read.csv(fname, sep=",", header=F, nrows=3)
     hidx <- 2*(1:(length( h[1,] )/2))
-    
+
     if( grepl("ClFFT", first_line) ) {
-        table1 <- cbind(t(h[1, hidx]), t(h[1, hidx+1]))
-        table1 <- rbind(table1, c(".library", "clfft"))
-        if(grepl("CPU", table1[1,2])) {
-            table1 <- rbind(table1, c(".arch", "cpu"))
+        table1 <- create_key_value_list(h[1, hidx],
+                                        h[1, hidx+1])
+        table1$.library <- "clfft"
+        if(grepl("CPU", table1$Device)) {
+            table1$.arch <- "cpu"
         } else {
-            table1 <- rbind(table1, c(".arch", "gpu")) # assume GPU (todo: more meta data in results)
+            table1$.arch <- "gpu" # assume GPU (todo: more meta data in results)
         }
+
     } else if( grepl("PlanRigor", first_line) ) {
-        table1 <- cbind(t(h[1, hidx-1]), t(h[1, hidx]))
-        table1 <- rbind(table1, c(".library", "fftw"))
-        table1 <- rbind(table1, c(".arch", "cpu"))
-        table1 <- rbind(c("Device","CPU"), table1)
+        table1 <- create_key_value_list(cbind(V1="Device",h[1, hidx-1]),
+                                        cbind(V1="CPU", h[1, hidx]))
+        table1$.library <- "fftw"
+        table1$.arch <- "cpu"
+
     } else if( grepl("CUDA", first_line) ) {
-        table1 <- cbind(t(cbind(V1="Device",h[1, hidx])), t(as.vector(h[1, c(1,hidx+1)])))
-        table1 <- rbind(table1, c(".library", "cufft"))
-        table1 <- rbind(table1, c(".arch", "gpu"))
+        table1 <- create_key_value_list(cbind(V1="Device",h[1, hidx]),
+                                        h[1, c(1,hidx+1)])
+        table1$.library <- "cufft"
+        table1$.arch <- "gpu"
+
     }
     else
         stop("Could not detect which FFT library is used.")
 
-    colnames(table1) <- c("Key", "Value")
-    table1[1:2,] <- gsub(";","",table1[1:2,])
-    table2 <- gsub(";","", as.matrix(h[2:3,1:2]))
-    colnames(table2) <- c("Timer", "Time")
-    rownames(table1)<-table1[,1]
-    rownames(table2)<-table2[,1]
-    table1[,2] <- trimws(table1[,2])
+    table2 <- create_key_value_list(h[2:3,1], h[2:3,2])
     header <- list(table1=table1, table2=table2)
     return(header)
 }
 
 open_gearshifft_csv <- function (i,fnames,flabels){
     fname<-fnames[i]
-    # extracting header
-    header <<- get_gearshifft_header(fname)
-    arch <- header$table1['.arch',2]
-    device <- header$table1['Device',2]
-    library <- header$table1['.library',2]
-    flags <- "none"
+
+    ## extracting header
+    header <- get_gearshifft_header(fname)
+    arch <- header$table1$.arch
+    device <- header$table1$Device
+    library <- header$table1$.library
+
     hardware <- device # paste0(device, " (", library, ")")
     if( arch=="cpu" && library=="clfft" )
-        hardware <- paste0(device, " ", header$table1["UsedComputeUnits",2], "x (", library, ")")
+        hardware <- paste0(device, " ", header$table1$UsedComputeUnits, "x (", library, ")")
     if( library=="fftw" ) {
-        flags <- header$table1["PlanRigor",2] 
-        hardware <- paste0(device, " ", header$table1["UsedThreads",2], "x (", library, " ", flags,")")
+        flags <- header$table1$PlanRigor
+        hardware <- paste0(device, " ", header$table1$UsedThreads, "x (", library, " ", flags,")")
     }
-    # extracting measurements
+
+    ## extracting measurements
     local_frame <- read_csv(fname,skip=3,col_names=TRUE)
     colnames(local_frame) <- gsub(' ','_',colnames(local_frame))
     local_frame$.file_id <- i
+
+    ## assign header information to global variable
+    headers[[i]] <<- header
+    if("float16" %in% local_frame$precision) {
+        headers[[i]]$float16 <<- T
+    } else {
+        headers[[i]]$float16 <<- F
+    }
 
     local_frame = local_frame %>%
         mutate( n_elements = ifelse(dim==1,nx, ifelse(dim==2,nx*ny, nx*ny*nz)) )
@@ -146,7 +180,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         xlabel <- "Number_Elements"
     else
         xlabel <- args$xmetric
-    
+
     if(grepl("Time", args$xmetric))
         xlabel <- paste0(args$xmetric,"_[ms]")
 
@@ -192,7 +226,8 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         cat("filtered for ndims == ",filter_dim,": \t",nrow(succeeded),"\n")
         filtered_by <- c(filtered_by, paste(filter_dim,"D",sep=""))
     }
-    if( args$speedup && nchar(filter_prec)==0 ) {
+    if( args$speedup && nchar(filter_prec)==0
+       && length(headers)==2 && any(headers[[1]]$float16, headers[[2]]$float16)==FALSE ) {
         succeeded <- succeeded %>% filter(precision != "float16")
 
     }
@@ -306,7 +341,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
             data_for_plotting <- bind_rows(dfp,d2) %>% na.omit()
         }
     }
-    
+
     tables <- list()
     tables$raw <- succeeded_reduced
     tables$reduced <- data_for_plotting
@@ -315,7 +350,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
     if( args$notitle == F ) {
         tables$hardware <- succeeded_reduced %>% distinct(hardware) %>% pull()
         tables$hardware <- paste0(tables$hardware, collapse=" vs. ")
-        
+
         tables$title <- paste("Filtered by:",paste(filtered_by,collapse=", "))
         tables$title <- paste(tables$hardware, "|", tables$title)
     } else {
@@ -511,7 +546,7 @@ plot_gearshifft <- function(tables,
                 trans = log_trans(base=logy_value),
                 breaks = trans_breaks(paste("log",logy_value,sep=""), breaks_y),
                 labels = trans_format(paste("log",logy_value,sep=""), format_expr_y))
-            
+
         }
 
         moi_plot <- moi_plot + scale_structure
@@ -536,12 +571,12 @@ plot_gearshifft <- function(tables,
                 breaks = trans_breaks(paste("log",logx_value,sep=""), breaks_x),
                 labels = trans_format(paste("log",logx_value,sep=""), format_expr_x)
             )
-            
+
         }
 
         moi_plot <- moi_plot + scale_x_structure
     }
 
-    
+
     return(moi_plot)
 }
