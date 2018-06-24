@@ -231,7 +231,7 @@ server <- function(input, output, session) {
         freqpoly <- F
         usepointsraw <- F
         usepoints <- F
-        visualization <- "-"
+        visualization <- "median+quartiles"
 
         ## plot type
         if(input$sPlotType=="Histogram") {
@@ -263,7 +263,7 @@ server <- function(input, output, session) {
             column(2, numericInput("sHistBins", "Bins", 200, min=10, max=1000))
         else if(input$sPlotType == "Lines") {
             fluidRow(column(1, checkboxInput("sUsepoints", "Draw Points")),
-                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean","-"),selected="quartiles")))
+                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean"),selected="median+quartiles")))
         }
     })
 
@@ -368,7 +368,7 @@ ui <- fluidPage(
                                              inline=T
                                              )),
                       fluidRow(
-                          column(8,textInput("sCustomName1","Custom Library Name (leave it empty for default label)",""))
+                          column(8,textInput("sCustomName1","Custom curve label (leave it empty for default label)",""))
                       )
                       )),
             column(6, wellPanel( fluidRow(
@@ -388,7 +388,7 @@ ui <- fluidPage(
                                              inline=T
                                              )),
                       fluidRow(
-                          column(8,textInput("sCustomName2","Custom Library Name (leave it empty for default label)",""))
+                          column(8,textInput("sCustomName2","Custom curve label (leave it empty for default label)",""))
                       )
                       ))
         ),
