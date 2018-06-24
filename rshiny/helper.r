@@ -288,7 +288,9 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         ##group_by(library, hardware, id, nx, ny, nz, xmoi) %>%
         summarize( moi_mean = mean(ymoi),
                   moi_median = median(ymoi),
-                  moi_stddev = sd(ymoi)
+                  moi_stddev = sd(ymoi),
+                  moi_quantile25 = quantile(ymoi,.25),
+                  moi_quantile75 = quantile(ymoi,.75)
                   )
 
 #### data2$y(x)/data1$y(x)
@@ -303,9 +305,13 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
             dfp$moi_mean <- d2$moi_mean / dfp$moi_mean
             dfp$moi_median <- d2$moi_median / dfp$moi_median
             dfp$moi_stddev <- 0
+            dfp$moi_quantile25 <- 0
+            dfp$moi_quantile75 <- 0
             d2$moi_mean <- 1
             d2$moi_median <- 1
             d2$moi_stddev <- 0
+            d2$moi_quantile25 <- 0
+            d2$moi_quantile75 <- 0
             data_for_plotting <- bind_rows(dfp,d2) %>% na.omit()
         }
     }
@@ -328,7 +334,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
 plot_gearshifft <- function(tables,
                             aesthetics="hardware,kind,library",
                             usepoints=T,
-                            noerrorbar=F,
+                            visualization="median+quartiles",
                             nolegend=F,
                             usepointsraw=F,
                             freqpoly=F,
@@ -336,11 +342,19 @@ plot_gearshifft <- function(tables,
                             xlimit="",
                             ylimit="",
                             logx="-",
-                            logy="-") {
+                            logy="-",
+                            speedup=F
+                            ) {
     succeeded_reduced <- tables$raw
     data_for_plotting <- tables$reduced
     name_of_xmetric <- tables$name_of_xmetric
     name_of_ymetric <- tables$name_of_ymetric
+    vis_median <- ifelse( grepl("median",visualization), T, F )
+    vis_bars <- ifelse(grepl("\\+",visualization) && freqpoly==F && usepointsraw==F && speedup==F,
+                       TRUE,
+                       FALSE )
+    moi_vis <- ifelse(vis_median,"moi_median","moi_mean")
+    
 
     my_theme <-  theme_bw() + theme(axis.title.x = element_text(size=18),
                                     axis.title.y = element_text(size=18),
@@ -414,16 +428,19 @@ plot_gearshifft <- function(tables,
                            ##     linetype=hardware)
                            aesthetics_to_use
                            )
-        moi_plot <- moi_plot + geom_line(aes(y=moi_mean),size=1)
+        moi_plot <- moi_plot + geom_line(aes_string(y=moi_vis),size=1)
         if( usepoints ) {
-            moi_plot <- moi_plot + geom_point(aes(y=moi_mean),size=3)
+            moi_plot <- moi_plot + geom_point(aes_string(y=moi_vis),size=3)
         }
-        if( noerrorbar == FALSE ) {
+        if( vis_bars && vis_median ) {
+            moi_plot <- moi_plot + geom_errorbar(aes(ymin = moi_quantile25,
+                                                     ymax = moi_quantile75),
+                                                 width=0.25, linetype =1)
+        } else if( vis_bars && vis_median==FALSE ) {
             moi_plot <- moi_plot + geom_errorbar(aes(ymin = moi_mean - moi_stddev,
                                                      ymax = moi_mean + moi_stddev),
                                                  width=0.25, linetype =1)
         }
-                                        #moi_plot <- moi_plot + scale_color_manual(name = "", values = c("red", 'blue'),labels=?)
         moi_plot <- moi_plot + scale_linetype_manual(values = c("solid","dotted","longdash")) #2,3,5,4,22,33,55,44))
     }
 
@@ -476,8 +493,8 @@ plot_gearshifft <- function(tables,
     xmin <- min(data_for_plotting$xmoi)
     xmax <- max(data_for_plotting$xmoi)
 
-    ymin <- min(data_for_plotting$moi_mean)
-    ymax <- max(data_for_plotting$moi_mean)
+    ymin <- min(data_for_plotting[[moi_vis]])
+    ymax <- max(data_for_plotting[[moi_vis]])
 
 
     if(logy_value > 1) {
