@@ -231,20 +231,16 @@ server <- function(input, output, session) {
         freqpoly <- F
         usepointsraw <- F
         usepoints <- F
-        noerrorbar <- F
+        visualization <- "-"
 
         ## plot type
         if(input$sPlotType=="Histogram") {
             freqpoly <- T
-            noerrorbar <- T
         } else if(input$sPlotType=="Points") {
             usepointsraw <- T
         } else {
             usepoints <- input$sUsepoints || length(aes)>2
-            noerrorbar <- input$sNoerrorbar
-        }
-        if(input$sSpeedup==T) {
-            noerrorbar <- T
+            visualization <- input$sVisualization
         }
 
         plot_gearshifft(tables,
@@ -255,9 +251,10 @@ server <- function(input, output, session) {
                         bins = input$sHistBins,
                         usepoints = usepoints,
                         usepointsraw = usepointsraw,
-                        noerrorbar = noerrorbar,
+                        visualization = visualization,
                         xlimit = input$sXlimit,
-                        ylimit = input$sYlimit
+                        ylimit = input$sYlimit,
+                        speedup = args$speedup
                         )
     })
 
@@ -266,7 +263,7 @@ server <- function(input, output, session) {
             column(2, numericInput("sHistBins", "Bins", 200, min=10, max=1000))
         else if(input$sPlotType == "Lines") {
             fluidRow(column(1, checkboxInput("sUsepoints", "Draw Points")),
-                     column(2, checkboxInput("sNoerrorbar", "Disable Error-Bars")))
+                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean","-"),selected="quartiles")))
         }
     })
 
@@ -319,7 +316,7 @@ server <- function(input, output, session) {
         if(input$sPlotType == "Histogram")
             p("Histograms help to analyze data of the validation code.", HTML("<ul><li>Use Time_* as xmetric for the x axis.</li><li>Probably better to disable log-scaling</li><li>If you do not see any curves then disable some filters.</li></ul>"))
         else if(input$sPlotType == "Lines")
-            p("Lines are drawn by the averages including error bars.", HTML("<ul><li>If you see jumps then you should enable more filters or use the 'Inspect' option.</li><li>Points are always drawn when the degree of freedom in the diagram is greater than 2.</li><li>no error bars are shown when speedup option is enabled (speedup is computed on the averages)</li><li>when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)</li></ul>"))
+            p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd).", HTML("<ul><li>If you see jumps then you should enable more filters or use the 'Inspect' option.</li><li>Points are always drawn when the degree of freedom in the diagram is greater than 2.</li><li>no (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)</li><li>when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)</li></ul>"))
         else if(input$sPlotType == "Points")
             p("This plot type allows to analyze the raw data by plotting each measure point. It helps analyzing the results of the validation code.")
 
