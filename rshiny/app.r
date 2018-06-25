@@ -231,7 +231,7 @@ server <- function(input, output, session) {
         freqpoly <- F
         usepointsraw <- F
         usepoints <- F
-        visualization <- "-"
+        visualization <- "median+quartiles"
 
         ## plot type
         if(input$sPlotType=="Histogram") {
@@ -263,7 +263,7 @@ server <- function(input, output, session) {
             column(2, numericInput("sHistBins", "Bins", 200, min=10, max=1000))
         else if(input$sPlotType == "Lines") {
             fluidRow(column(1, checkboxInput("sUsepoints", "Draw Points")),
-                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean","-"),selected="quartiles")))
+                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean"),selected="median+quartiles")))
         }
     })
 
@@ -271,19 +271,19 @@ server <- function(input, output, session) {
         input_files <- get_input_files(input)
         header <- get_gearshifft_header( input_files[1] )
         output$table1 <- renderTable({
-            header$table1
+            key_value_list_to_table(header$table1)
         })
         output$table2 <- renderTable({
-            header$table2
+            key_value_list_to_table(header$table2)
         })
 
         if(length(input_files)>1) {
             header2 <- get_gearshifft_header( input_files[2] )
             output$table3 <- renderTable({
-                header2$table1
+                key_value_list_to_table(header2$table1)
             })
             output$table4 <- renderTable({
-                header2$table2
+                key_value_list_to_table(header2$table2)
             })
             wellPanel(
                 br(),
@@ -368,7 +368,7 @@ ui <- fluidPage(
                                              inline=T
                                              )),
                       fluidRow(
-                          column(8,textInput("sCustomName1","Custom Library Name (leave it empty for default label)",""))
+                          column(8,textInput("sCustomName1","Custom curve label (leave it empty for default label)",""))
                       )
                       )),
             column(6, wellPanel( fluidRow(
@@ -388,7 +388,7 @@ ui <- fluidPage(
                                              inline=T
                                              )),
                       fluidRow(
-                          column(8,textInput("sCustomName2","Custom Library Name (leave it empty for default label)",""))
+                          column(8,textInput("sCustomName2","Custom curve label (leave it empty for default label)",""))
                       )
                       ))
         ),
@@ -411,7 +411,7 @@ ui <- fluidPage(
             column(2, selectInput("sYmetric", "ymetric", append(time_columns,c("Size_DeviceBuffer","Size_DevicePlan","Size_DeviceBuffer+Size_DevicePlan","Size_DeviceTransfer","Error_StandardDeviation","Error_Mismatches")), selected="Time_Total"))
         ),
         fluidRow(
-            column(2, selectInput("sAes", "Inspect", c("-","inplace","flags","precision","dim","kind"), selected="precision")),
+            column(2, selectInput("sAes", "Inspect", c("-","inplace","precision","dim","kind"), selected="precision")),
             column(2, selectInput("sRun", "Run", c("-","Success", "Warmup"), selected="Success")),
             column(2, checkboxInput("sYRatio","Ratio Total Time")),
             column(2, checkboxInput("sSpeedup","Speedup"))
