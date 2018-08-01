@@ -52,11 +52,13 @@ get_gearshifft_header <- function(fname) {
                                         cbind(V1="CPU", h[1, hidx]))
         table1$.library <- "fftw"
         table1$.arch <- "cpu"
-        ## identify device by hostname on taurus
-        taurusi_no <- as.numeric(regmatches(table1$Hostname, regexpr("[0-9]+", table1$Hostname)))
-        ## https://doc.zih.tu-dresden.de/hpc-wiki/bin/view/Compendium/SystemTaurus
-        if( is.null(taurusi_no)==F && taurusi_no>4000 && taurusi_no<=6612 )
-            table1$Device <- "Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz"
+        if( grepl("taurusi", table1$Hostname) ) {
+            ## identify device by hostname on taurus
+            taurusi_no <- as.numeric(regmatches(table1$Hostname, regexpr("[0-9]+", table1$Hostname)))
+            ## https://doc.zih.tu-dresden.de/hpc-wiki/bin/view/Compendium/SystemTaurus
+            if( is.null(taurusi_no)==F && taurusi_no>4000 && taurusi_no<=6612 )
+                table1$Device <- "Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz"
+        }
 
     } else if( grepl("CUDA", first_line) ) {
         table1 <- create_key_value_list(cbind(V1="Device",h[1, hidx]),

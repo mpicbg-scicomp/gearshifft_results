@@ -3,6 +3,8 @@
 library(ggplot2)
 library(shiny)
 
+cat(file=stderr(), "---\n")
+
 source("helper.r")
 
 flist1_selected <- ""
@@ -360,11 +362,13 @@ ui <- fluidPage(
                                              c("cuda"="cuda",
                                                "clfft"="clfft",
                                                "fftw"="fftw",
+                                               "mkl"="mkl",
                                                "k80"="K80",
                                                "gtx1080"="GTX1080",
                                                "p100"="P100",
                                                "v100"="V100",
-                                               "haswell"="haswell"),
+                                               "haswell"="haswell",
+                                               "broadwell"="broadwell"),
                                              inline=T
                                              )),
                       fluidRow(
@@ -380,11 +384,13 @@ ui <- fluidPage(
                                              c("cuda"="cuda",
                                                "clfft"="clfft",
                                                "fftw"="fftw",
+                                               "mkl"="mkl",
                                                "k80"="K80",
                                                "gtx1080"="GTX1080",
                                                "p100"="P100",
                                                "v100"="V100",
-                                               "haswell"="haswell"),
+                                               "haswell"="haswell",
+                                               "broadwell"="broadwell"),
                                              inline=T
                                              )),
                       fluidRow(
