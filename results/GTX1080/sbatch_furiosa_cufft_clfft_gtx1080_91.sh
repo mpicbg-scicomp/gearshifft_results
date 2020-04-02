@@ -6,14 +6,14 @@
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:1
 #SBATCH --array 1-2
-#SBATCH -o gearshifft-gtx1080_array-%A_%a.out
-#SBATCH -e gearshifft-gtx1080_array-%A_%a.err
+#SBATCH -o gearshifft-gtx1080_91-%A_%a.out
+#SBATCH -e gearshifft-gtx1080_91-%A_%a.err
 
 k=$SLURM_ARRAY_TASK_ID
 
 CURDIR=${HOME}/development/gearshifft_results
 APPROOT=${HOME}/development/gearshifft
-RESULTSA=${CURDIR}/results/GTX1080/cuda-9.0.176
+RESULTSA=${CURDIR}/results/GTX1080/cuda-9.1.85
 RESULTSB=${CURDIR}/results/GTX1080/clfft-2.12.2
 
 FEXTENTS1D=$CURDIR/share/gearshifft/extents_1d_publication.conf
@@ -24,7 +24,7 @@ FEXTENTS=${APPROOT}/share/gearshifft/extents_capped_all_publication.conf
 
 module load clfft/2.12.2 boost/1.66.0
 module unload cuda
-module load cuda/9.0.176
+module load cuda/9.1.85
 # module unload gcc
 # module load gcc/5.3.0
 
