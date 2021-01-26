@@ -1,0 +1,36 @@
+set -e
+
+build() {
+
+    [[ "$#" -eq "4" ]] || (echo "Wrong number of arguments passed to build" && false)
+
+    compiler=$1
+    name=$2
+    warmups=$3
+    warm_runs=$4
+
+    rm -rf "gs-build-$name"
+
+    mkdir "gs-build-$name"
+    pushd "gs-build-$name"
+
+    SCOREP_WRAPPER=off \
+    cmake -DCMAKE_CXX_COMPILER="$compiler" \
+          -DCMAKE_INSTALL_PREFIX="$WS/gs-install-$name/" \
+          -DGEARSHIFFT_CUFFT=OFF \
+          -DGEARSHIFFT_CLFFT=OFF \
+          -DGEARSHIFFT_NUMBER_WARMUPS="$warmups" \
+          -DGEARSHIFFT_NUMBER_WARM_RUNS="$warm_runs" \
+          "$WS/gearshifft"
+
+    make SCOREP_WRAPPER_INSTRUMENTER_FLAGS="--user --nocompiler --thread=none" -j "$(nproc)" install
+
+    popd
+}
+
+pushd /tmp
+
+build g++        normal 0 20
+build scorep-g++ scorep 0 20
+
+popd

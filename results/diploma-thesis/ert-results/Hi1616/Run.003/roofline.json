@@ -1,0 +1,166 @@
+{
+   "empirical": {
+      "gbytes": {
+         "data": [
+            [
+               "L1", 
+               2430.45
+            ], 
+            [
+               "L2", 
+               1799.43
+            ], 
+            [
+               "L3", 
+               616.31
+            ], 
+            [
+               "DRAM", 
+               48.26
+            ]
+         ], 
+         "metadata": {
+            "TIMESTAMP_DB": 1600178549.660388
+         }
+      }, 
+      "gflops": {
+         "data": [
+            [
+               "FP64 GFLOPs", 
+               304.32
+            ]
+         ], 
+         "metadata": {
+            "TIMESTAMP_DB": 1600178549.659881
+         }
+      }, 
+      "metadata": {
+         "ERT_VERSION": "1.1.0", 
+         "UNAME": [
+            "Linux", 
+            "juawei-a18", 
+            "4.18.0-80.7.2.el7.aarch64", 
+            "#1 SMP Thu Sep 12 16:13:20 UTC 2019", 
+            "aarch64", 
+            "aarch64"
+         ], 
+         "HOSTNAME": [
+            "juawei-a18.localdomain", 
+            [
+               "juawei-a18", 
+               "juawei-a18-enahisic2i0.localdomain", 
+               "juawei-a18-enahisic2i0"
+            ], 
+            [
+               "10.31.4.28"
+            ]
+         ], 
+         "OPENMP_THREADS": 32, 
+         "TIMESTAMP_DATA": 1599914856.34, 
+         "FLOPS": 2, 
+         "CONFIG": {
+            "ERT_WORKING_SET_MIN": [
+               "1"
+            ], 
+            "ERT_CFLAGS": [
+               "-O3", 
+               "-march=native", 
+               "-mcpu=native", 
+               "-mtune=native", 
+               "-ffast-math", 
+               "-fstrict-aliasing"
+            ], 
+            "ERT_CC": [
+               "g++"
+            ], 
+            "ERT_WSS_MULT": [
+               1.1
+            ], 
+            "ERT_HIP": [
+               false
+            ], 
+            "ERT_MPI_CFLAGS": [], 
+            "ERT_MPI_LDFLAGS": [], 
+            "ERT_MEMORY_MAX": [
+               "500000000"
+            ], 
+            "ERT_PROCS_THREADS": [], 
+            "ERT_LDFLAGS": [
+               "-O3"
+            ], 
+            "ERT_LDLIBS": [], 
+            "ERT_RUN": [
+               "export", 
+               "OMP_NUM_THREADS=ERT_OPENMP_THREADS;", 
+               "numactl", 
+               "--localalloc", 
+               "--cpunodebind=2,3", 
+               "./ERT_CODE"
+            ], 
+            "ERT_OCL": [
+               false
+            ], 
+            "ERT_FLOPS": [
+               "1,2,4,8,16,32,64,128,256,512"
+            ], 
+            "ERT_OPENMP_CFLAGS": [
+               "-fopenmp"
+            ], 
+            "ERT_SYCL": [
+               false
+            ], 
+            "ERT_MPI": [
+               "False"
+            ], 
+            "ERT_TRIALS_MIN": [
+               "1"
+            ], 
+            "ERT_DRIVER": [
+               "driver1"
+            ], 
+            "ERT_RESULTS": [
+               "ert-results/Hi1616"
+            ], 
+            "ERT_OPENMP": [
+               "True"
+            ], 
+            "ERT_MPI_PROCS": [], 
+            "ERT_KERNEL": [
+               "kernel1"
+            ], 
+            "ERT_PRECISION": [
+               "FP64"
+            ], 
+            "ERT_OPENMP_THREADS": [
+               "1,2,4,8,16,32"
+            ], 
+            "ERT_LD": [
+               "g++"
+            ], 
+            "ERT_NUM_EXPERIMENTS": [
+               "1"
+            ], 
+            "ERT_OPENMP_LDFLAGS": [
+               "-fopenmp"
+            ], 
+            "ERT_GPU": [
+               false
+            ], 
+            "ERT_ALIGN": [
+               "64"
+            ], 
+            "ERT_GNUPLOT": [
+               "gnuplot"
+            ]
+         }
+      }
+   }, 
+   "spec": {
+      "gbytes": {
+         "data": []
+      }, 
+      "gflops": {
+         "data": []
+      }
+   }
+}
