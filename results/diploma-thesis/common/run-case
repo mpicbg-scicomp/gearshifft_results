@@ -1,0 +1,32 @@
+run_case() {
+
+    [[ "$#" -eq "7" ]] || (>&2 echo "run_case called with wrong number of arguments" && false)
+
+    machine="$1"
+    install="$2"
+    caseN="$3"
+    exe_suffix="$4"
+    bench="$5"
+    rigor="$6"
+    run="$7"
+
+    output="${install}-${caseN}-${machine}-${exe_suffix}-${SLURM_JOB_ID}-${run}"
+
+    export SCOREP_EXPERIMENT_DIRECTORY="$RESULTS/$output"
+    export SCOREP_PROFILING_ENABLE_CLUSTERING=false
+    export SCOREP_METRIC_PAPI=PAPI_DP_OPS
+
+    echo "--- Running $caseN ($exe_suffix) ---"
+
+    /usr/bin/time \
+        numactl --cpunodebind="$NUMA_NODES" --membind="$NUMA_NODES" \
+            "$WS/gs-install-${install}/bin/gearshifft_${exe_suffix}" \
+                --file="$WS/common/extents-${caseN}.conf" \
+                --rigor="$rigor" \
+                --output="$RESULTS/${output}.csv" \
+                --ndevices="$OMP_NUM_THREADS" \
+                --run-benchmarks="$bench"
+
+    echo
+
+}

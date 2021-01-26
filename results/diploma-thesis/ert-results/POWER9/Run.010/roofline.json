@@ -1,0 +1,179 @@
+{
+   "empirical": {
+      "gbytes": {
+         "data": [
+            [
+               "L1", 
+               4311.03
+            ], 
+            [
+               "L2", 
+               3615.55
+            ], 
+            [
+               "L3", 
+               271.87
+            ], 
+            [
+               "DRAM", 
+               137.43
+            ]
+         ], 
+         "metadata": {
+            "TIMESTAMP_DATA": [
+               1601231236.13, 
+               1601231258.25, 
+               1601231246.6, 
+               1601231252.62, 
+               1601231241.45
+            ], 
+            "FLOPS": 1, 
+            "TIMESTAMP_DB": 1601303159.774173
+         }
+      }, 
+      "gflops": {
+         "data": [
+            [
+               "FP64 GFLOPs", 
+               539.4
+            ]
+         ], 
+         "metadata": {
+            "TIMESTAMP_DATA": [
+               1601232180.94, 
+               1601232185.87, 
+               1601232191.12, 
+               1601232173.74, 
+               1601232196.4
+            ], 
+            "FLOPS": 2, 
+            "TIMESTAMP_DB": 1601303159.773439
+         }
+      }, 
+      "metadata": {
+         "ERT_VERSION": "1.1.0", 
+         "OPENMP_THREADS": 88, 
+         "HOSTNAME": [
+            "taurusml4", 
+            [
+               "taurusml4.taurus.hrsk.tu-dresden.de"
+            ], 
+            [
+               "172.24.148.20"
+            ]
+         ], 
+         "CONFIG": {
+            "ERT_WORKING_SET_MIN": [
+               "1"
+            ], 
+            "ERT_CFLAGS": [
+               "-Wall", 
+               "-Wextra", 
+               "-O3", 
+               "-mcpu=native", 
+               "-mtune=native", 
+               "-ffast-math", 
+               "-fstrict-aliasing"
+            ], 
+            "ERT_CC": [
+               "g++"
+            ], 
+            "ERT_WSS_MULT": [
+               1.1
+            ], 
+            "ERT_HIP": [
+               false
+            ], 
+            "ERT_MPI_CFLAGS": [], 
+            "ERT_MPI_LDFLAGS": [], 
+            "ERT_MEMORY_MAX": [
+               "2147483648"
+            ], 
+            "ERT_PROCS_THREADS": [], 
+            "ERT_LDFLAGS": [
+               "-O3"
+            ], 
+            "ERT_LDLIBS": [], 
+            "ERT_RUN": [
+               "export", 
+               "OMP_NUM_THREADS=ERT_OPENMP_THREADS;", 
+               "numactl", 
+               "--localalloc", 
+               "--cpunodebind=8", 
+               "./ERT_CODE"
+            ], 
+            "ERT_OCL": [
+               false
+            ], 
+            "ERT_FLOPS": [
+               "1,2,3,4,5,6,8,12,16,32,64,128"
+            ], 
+            "ERT_OPENMP_CFLAGS": [
+               "-fopenmp"
+            ], 
+            "ERT_SYCL": [
+               false
+            ], 
+            "ERT_MPI": [
+               "False"
+            ], 
+            "ERT_TRIALS_MIN": [
+               "1"
+            ], 
+            "ERT_DRIVER": [
+               "driver1"
+            ], 
+            "ERT_RESULTS": [
+               "ert-results/POWER9"
+            ], 
+            "ERT_OPENMP": [
+               "True"
+            ], 
+            "ERT_MPI_PROCS": [], 
+            "ERT_KERNEL": [
+               "kernel1"
+            ], 
+            "ERT_PRECISION": [
+               "FP64"
+            ], 
+            "ERT_OPENMP_THREADS": [
+               "1,2,3,4,5,6,8,12,16,22,44,88"
+            ], 
+            "ERT_LD": [
+               "g++"
+            ], 
+            "ERT_NUM_EXPERIMENTS": [
+               "5"
+            ], 
+            "ERT_OPENMP_LDFLAGS": [
+               "-fopenmp"
+            ], 
+            "ERT_GPU": [
+               false
+            ], 
+            "ERT_ALIGN": [
+               "128"
+            ], 
+            "ERT_GNUPLOT": [
+               "gnuplot"
+            ]
+         }, 
+         "UNAME": [
+            "Linux", 
+            "taurusml4", 
+            "4.14.0-115.19.1.el7a.ppc64le", 
+            "#1 SMP Fri Mar 13 19:23:11 UTC 2020", 
+            "ppc64le", 
+            "ppc64le"
+         ]
+      }
+   }, 
+   "spec": {
+      "gbytes": {
+         "data": []
+      }, 
+      "gflops": {
+         "data": []
+      }
+   }
+}

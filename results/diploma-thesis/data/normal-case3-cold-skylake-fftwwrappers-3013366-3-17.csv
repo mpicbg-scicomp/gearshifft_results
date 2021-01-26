@@ -1,0 +1,24 @@
+; "SupportedThreads",80,"UsedThreads",20,"TotalMemory",404345507840,"PlanRigor","estimate","PlanTimeLimit [s]","None","NumberWarmups",0,"NumberWarmRuns",20,"NumberTotalRuns",20,"ErrorBound",1e-05,"CurrentTime",1600864293,"CurrentTimeLocal","Wed Sep 23 14:31:33 2020","Hostname","csk092.cluster","gearshifft","0.3.0"
+; "Time_ContextCreate [ms]", 9.5e-05
+; "Time_ContextDestroy [ms]", 3.3e-05
+"library","inplace","complex","precision","dim","kind","nx","ny","nz","run","id","success","Time_Allocation [ms]","Time_PlanInitFwd [ms]","Time_PlanInitInv [ms]","Time_Upload [ms]","Time_FFT [ms]","Time_iFFT [ms]","Time_Download [ms]","Time_PlanDestroy [ms]","Time_Total [ms]","Size_DeviceBuffer [bytes]","Size_DevicePlan [bytes]","Size_DeviceTransfer [bytes]","Error_StandardDeviation","Error_Mismatches"
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,0,0,"Success",0.004116,0.300815,0.131892,1.629399,23.449791,18.069603,0.457631,0.253077,44.296877,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,1,0,"Success",0.00543,0.181082,0.122723,1.570076,16.746908,11.211234,0.331594,0.015579,30.18502,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,2,0,"Success",0.00085,0.145173,0.11486,0.449428,0.802666,0.48722,0.318886,0.015646,2.335142,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,3,0,"Success",0.00094,0.14113,0.114899,0.455305,0.493052,0.474613,0.312118,0.014867,2.007335,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,4,0,"Success",0.000801,0.138909,0.114613,0.468729,0.507749,0.469326,0.299297,0.014855,2.014696,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,5,0,"Success",0.000795,0.138166,0.114352,0.460837,0.498658,0.464181,0.30126,0.014839,1.993495,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,6,0,"Success",0.00079,0.137377,0.114459,0.458353,0.497301,0.469124,0.300358,0.01498,1.993129,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,7,0,"Success",0.000818,0.137791,0.114837,0.472224,0.500174,0.471941,0.297466,0.014938,2.010589,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,8,0,"Success",0.000826,0.137956,0.114505,0.466561,0.498494,0.458618,0.299677,0.014796,1.991924,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,9,0,"Success",0.000736,0.137042,0.114673,0.468822,0.5092,0.460895,0.300603,0.014602,2.006988,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,10,0,"Success",0.000789,0.136431,0.114392,0.462729,0.502292,0.455577,0.300688,0.014958,1.988265,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,11,0,"Success",0.000843,0.137616,0.114348,0.448826,0.507832,0.470891,0.300982,0.014758,1.996492,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,12,0,"Success",0.00083,0.137527,0.114635,0.450201,0.513619,0.457262,0.302416,0.014662,1.991531,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,13,0,"Success",0.000886,0.136067,0.114412,0.449113,0.507365,0.469675,0.306251,0.014712,1.998836,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,14,0,"Success",0.000823,0.137087,0.114198,0.457847,0.497604,0.467921,0.304279,0.014744,1.994861,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,15,0,"Success",0.000792,0.136087,0.114541,0.464747,0.508848,0.456023,0.299877,0.014565,1.995831,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,16,0,"Success",0.00085,0.135974,0.114567,0.455994,0.501281,0.461726,0.30242,0.014642,1.987819,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,17,0,"Success",0.00085,0.135525,0.114497,0.452949,0.500981,0.463828,0.307513,0.014957,1.991457,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,18,0,"Success",0.000853,0.136888,0.114383,0.454475,0.505123,0.463332,0.305123,0.014671,1.995206,3037968,0,2996352,1.212794958e-15,0
+"Fftw_mkl_gnuwrapper","Inplace","Real","double",3,"oddshape",51,51,144,19,0,"Success",0.000816,0.137011,0.114323,0.447814,0.507935,0.468798,0.304021,0.015067,1.996161,3037968,0,2996352,1.212794958e-15,0

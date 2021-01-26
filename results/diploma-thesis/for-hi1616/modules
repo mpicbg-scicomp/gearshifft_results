@@ -1,0 +1,10 @@
+module load Generic-AArch64/RHEL/7/gcc-9.2.0/armpl/20.1.0
+export SPACK_ROOT=$HOME/spack
+source $SPACK_ROOT/share/spack/setup-env.sh
+module load cmake-3.18.0-gcc-9.2.0-bk3oklt \
+                    boost-1.73.0-gcc-9.2.0-x7rilby \
+                    fftw-3.3.8-gcc-9.2.0-zbtjddv \
+                    scorep-6.0-gcc-9.2.0-4d7ezzk \
+                    papi-6.0.0.1-gcc-9.2.0-27iopi3 \
+                    cubelib-4.5-gcc-9.2.0-fxsty2h
+

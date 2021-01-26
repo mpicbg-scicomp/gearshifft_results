@@ -1,0 +1,9 @@
+module purge
+module load scorep/6.0-gcc7.3.0-cuda10.2-papi \
+            papi/6.0.0 \
+            gcc/7.3.0 \
+            cmake/3.15.2 \
+            make/4.3 \
+            boost/1.72.0 \
+            git/2.19.0 \
+            intel/19.0
