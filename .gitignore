@@ -1,0 +1,8 @@
+*~
+*.bak*
+
+*-flops.csv
+*.merged.csv
+
+plots
+__pycache__
