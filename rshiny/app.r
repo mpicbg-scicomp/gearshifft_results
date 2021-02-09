@@ -334,6 +334,23 @@ server <- function(input, output, session) {
 
 time_columns <- c("Time_Total","Time_FFT","Time_iFFT", "Time_Download", "Time_Upload", "Time_Allocation", "Time_PlanInitFwd", "Time_PlanInitInv", "Time_PlanDestroy")
 
+# Tags to choose architectures and/or libraries. Format: "ui string" = "regex for file name"
+arch_lib_tags <- c("CUDA"="cuda",
+                   "clFFT"="clfft",
+                   "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
+                   "MKL"="mkl",
+                   "ESSL"="esslfftw",
+                   "ArmPL"="armplfftw",
+                   "Tesla K80"="K80",
+                   "GTX 1080"="GTX1080",
+                   "Tesla P100"="P100",
+                   "Tesla V100"="V100",
+                   "Haswell"="haswell",
+                   "Broadwell"="broadwell",
+                   "Skylake"="skylake",
+                   "POWER 9"="power9",
+                   "Cortex A72"="cortex-a72")
+
 ui <- fluidPage(
 
     theme="simplex.min.css",
@@ -358,24 +375,7 @@ ui <- fluidPage(
                           column(9, uiOutput("fInput1"))
                       ),
                       fluidRow(
-                          checkboxGroupInput("tags1", "Tags",
-                                             c("CUDA"="cuda",
-                                               "clFFT"="clfft",
-                                               "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
-                                               "MKL"="mkl",
-                                               "ESSL"="esslfftw",
-                                               "ArmPL"="armplfftw",
-                                               "Tesla K80"="K80",
-                                               "GTX 1080"="GTX1080",
-                                               "Tesla P100"="P100",
-                                               "Tesla V100"="V100",
-                                               "Haswell"="haswell",
-                                               "Broadwell"="broadwell",
-                                               "Skylake"="skylake",
-                                               "POWER 9"="power9",
-                                               "Cortex A72"="cortex-a72"),
-                                             inline=T
-                                             )),
+                          checkboxGroupInput("tags1", "Tags", arch_lib_tags, inline=T)),
                       fluidRow(
                           column(8,textInput("sCustomName1","Custom curve label (leave it empty for default label)",""))
                       )
@@ -385,24 +385,7 @@ ui <- fluidPage(
                           column(9, uiOutput("fInput2"))
                       ),
                       fluidRow(
-                          checkboxGroupInput("tags2", "Tags",
-                                             c("CUDA"="cuda",
-                                               "clFFT"="clfft",
-                                               "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
-                                               "MKL"="mkl",
-                                               "ESSL"="esslfftw",
-                                               "ArmPL"="armplfftw",
-                                               "Tesla K80"="K80",
-                                               "GTX 1080"="GTX1080",
-                                               "Tesla P100"="P100",
-                                               "Tesla V100"="V100",
-                                               "Haswell"="haswell",
-                                               "Broadwell"="broadwell",
-                                               "Skylake"="skylake",
-                                               "POWER 9"="power9",
-                                               "Cortex A72"="cortex-a72"),
-                                             inline=T
-                                             )),
+                          checkboxGroupInput("tags2", "Tags", arch_lib_tags, inline=T )),
                       fluidRow(
                           column(8,textInput("sCustomName2","Custom curve label (leave it empty for default label)",""))
                       )
