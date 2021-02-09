@@ -87,7 +87,7 @@ filter_by_tags <- function(flist, tags) {
     if( is.null(tags)==FALSE )
     {
         flist <- gearshifft_flist
-        matches <- Reduce(intersect, lapply(tags, grep, flist))
+        matches <- Reduce(intersect, lapply(tags, grep, flist, perl = TRUE))
         flist <- flist[ matches ]
     }
     return(flist)
@@ -359,16 +359,21 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                           checkboxGroupInput("tags1", "Tags",
-                                             c("cuda"="cuda",
-                                               "clfft"="clfft",
-                                               "fftw"="fftw",
-                                               "mkl"="mkl",
-                                               "k80"="K80",
-                                               "gtx1080"="GTX1080",
-                                               "p100"="P100",
-                                               "v100"="V100",
-                                               "haswell"="haswell",
-                                               "broadwell"="broadwell"),
+                                             c("CUDA"="cuda",
+                                               "clFFT"="clfft",
+                                               "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
+                                               "MKL"="mkl",
+                                               "ESSL"="esslfftw",
+                                               "ArmPL"="armplfftw",
+                                               "Tesla K80"="K80",
+                                               "GTX 1080"="GTX1080",
+                                               "Tesla P100"="P100",
+                                               "Tesla V100"="V100",
+                                               "Haswell"="haswell",
+                                               "Broadwell"="broadwell",
+                                               "Skylake"="skylake",
+                                               "POWER 9"="power9",
+                                               "Cortex A72"="cortex-a72"),
                                              inline=T
                                              )),
                       fluidRow(
@@ -381,16 +386,21 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                           checkboxGroupInput("tags2", "Tags",
-                                             c("cuda"="cuda",
-                                               "clfft"="clfft",
-                                               "fftw"="fftw",
-                                               "mkl"="mkl",
-                                               "k80"="K80",
-                                               "gtx1080"="GTX1080",
-                                               "p100"="P100",
-                                               "v100"="V100",
-                                               "haswell"="haswell",
-                                               "broadwell"="broadwell"),
+                                             c("CUDA"="cuda",
+                                               "clFFT"="clfft",
+                                               "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
+                                               "MKL"="mkl",
+                                               "ESSL"="esslfftw",
+                                               "ArmPL"="armplfftw",
+                                               "Tesla K80"="K80",
+                                               "GTX 1080"="GTX1080",
+                                               "Tesla P100"="P100",
+                                               "Tesla V100"="V100",
+                                               "Haswell"="haswell",
+                                               "Broadwell"="broadwell",
+                                               "Skylake"="skylake",
+                                               "POWER 9"="power9",
+                                               "Cortex A72"="cortex-a72"),
                                              inline=T
                                              )),
                       fluidRow(
