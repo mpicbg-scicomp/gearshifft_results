@@ -388,10 +388,8 @@ plot_gearshifft <- function(tables,
     data_for_plotting <- tables$reduced
     name_of_xmetric <- tables$name_of_xmetric
     name_of_ymetric <- tables$name_of_ymetric
-    vis_median <- ifelse( grepl("median",visualization), T, F )
-    vis_bars <- ifelse(grepl("\\+",visualization) && !freqpoly && !usepointsraw && !speedup,
-                       TRUE,
-                       FALSE )
+    vis_median <- grepl("median",visualization)
+    vis_bars <- grepl("\\+",visualization) && !freqpoly && !usepointsraw && !speedup
     moi_vis <- ifelse(vis_median,"moi_median","moi_mean")
     tables$title <- paste(tables$title, "|", visualization)
 
