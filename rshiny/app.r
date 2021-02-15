@@ -351,9 +351,12 @@ arch_lib_tags <- c("CUDA"="cuda",
                    "POWER 9"="power9",
                    "Cortex A72"="cortex-a72")
 
-ui <- fluidPage(
+page_title <- "gearshifft | Benchmark Analysis Tool"
 
+ui <- fluidPage(
+    title=page_title,
     theme="simplex.min.css",
+
     tags$style(type="text/css",
                "label {font-size: 12px;}",
                "p {font-weight: bold;}",
@@ -361,7 +364,7 @@ ui <- fluidPage(
                ".checkbox {vertical-align: top; margin-top: 0px; padding-top: 0px;}"
                ),
 
-    h1("gearshifft | Benchmark Analysis Tool"),
+    h1(page_title),
     p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures. Get ",
       a(href="https://github.com/mpicbg-scicomp/gearshifft/", "gearshifft on github.")),
     hr(),
