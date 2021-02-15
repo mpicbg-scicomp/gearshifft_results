@@ -84,7 +84,7 @@ filter_presets_gui[['Points']] <- filter_to_string(filter_presets_points)
 
 filter_by_tags <- function(flist, tags) {
 
-    if( is.null(tags)==FALSE )
+    if(!is.null(tags))
     {
         flist <- gearshifft_flist
         matches <- Reduce(intersect, lapply(tags, grep, flist, perl = TRUE))
@@ -137,7 +137,7 @@ get_args <- function(input) {
 server <- function(input, output, session) {
     observe({
         filter <- string_to_filter(input$sFilter)
-        if(is.null(filter)==FALSE) {
+        if(!is.null(filter)) {
             updateSelectInput(session, "sInplace", selected = filter$inplace)
             updateSelectInput(session, "sComplex", selected = filter$complex)
             updateSelectInput(session, "sPrec", selected = filter$precision)
@@ -155,7 +155,7 @@ server <- function(input, output, session) {
     })
     
     observe({
-        if (input$sSpeedup==TRUE && (is.null(input$sData2) || input$sData2=="none"))
+        if (input$sSpeedup && (is.null(input$sData2) || input$sData2=="none"))
             updateCheckboxInput(session, "sSpeedup", value=FALSE)
     })
     
