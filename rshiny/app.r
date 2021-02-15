@@ -164,7 +164,7 @@ server <- function(input, output, session) {
             return()
         flist <- gearshifft_flist
         flist <- filter_by_tags(flist, input$tags1) ## files matching tags like cuda p100 ...
-        if(flist1_selected %in% flist == FALSE) ## if flist1_selected is not in (filtered) flist, disable it
+        if(flist1_selected %!in% flist) ## if flist1_selected is not in (filtered) flist, disable it
             flist1_selected<<-""
         switch(input$sData1,
                "gearshifft" = selectInput("file1", "File", choices=flist, selected=flist1_selected),
@@ -177,7 +177,7 @@ server <- function(input, output, session) {
             return()
         flist <- gearshifft_flist
         flist <- filter_by_tags(flist, input$tags2)
-        if(flist2_selected %in% flist == FALSE)
+        if(flist2_selected %!in% flist)
             flist2_selected<<-""
         switch(input$sData2,
                "gearshifft" = selectInput("file2", "File", choices=flist, selected=flist2_selected),

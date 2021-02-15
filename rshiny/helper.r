@@ -4,6 +4,8 @@ library(plyr)
 library(dplyr)
 library(scales)
 
+'%!in%' <- Negate('%in%')
+
 ## header with meta information about results
 headers<-list()
 
@@ -222,7 +224,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         filtered_by <- c(filtered_by, filter_prec)
     }
 
-    if ( nchar(filter_kind) > 0 && !("all" %in% filter_kind) ){
+    if (nchar(filter_kind) > 0 && "all" %!in% filter_kind){
         succeeded <- succeeded %>% filter(kind == filter_kind)
         cat("filtered for kind == ",filter_kind,": \t",nrow(succeeded),"\n")
         filtered_by <- c(filtered_by, filter_kind)
