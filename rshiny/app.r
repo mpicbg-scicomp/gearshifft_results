@@ -460,10 +460,9 @@ ui <- fluidPage(
                  br(),
                  DT::dataTableOutput("sTable"),
                  p("A table aggregates the data and shows the average of the runs for each benchmark."),
-                 div(tags$ul(
+                 tags$ul(
                     tags$li("xmoi: xmetric of interest (xmetric='nbytes' -> signal size in MiB)"),
-                    tags$li("ymoi: ymetric of interest")
-                 ))
+                    tags$li("ymoi: ymetric of interest"))
                  ),
         ## Table panel
         tabPanel("Raw Data",
