@@ -37,7 +37,7 @@ The results obtained with [gearshifft](https://github.com/mpicbg-scicomp/gearshi
 Several R libraries are required to run our r-shiny app locally.
 
 ```
-ggplot2 dplyr plyr readr scales DT shiny
+ggplot2 dplyr plyr readr scales DT shiny shinythemes
 ```
 After the installation you can run:
 ```

@@ -2,6 +2,7 @@
 
 library(ggplot2)
 library(shiny)
+library(shinythemes)
 
 cat(file=stderr(), "---\n")
 
@@ -354,8 +355,8 @@ arch_lib_tags <- c("CUDA"="cuda",
 page_title <- "gearshifft | Benchmark Analysis Tool"
 
 ui <- fluidPage(
+    theme=shinytheme("simplex"),
     title=page_title,
-    theme="simplex.min.css",
 
     tags$style(type="text/css",
                "label {font-size: 12px;}",
