@@ -317,19 +317,24 @@ server <- function(input, output, session) {
     #
     output$sHint <- renderUI({
         if(input$sPlotType == "Histogram")
-            p("Histograms help to analyze data of the validation code.", tags$ul(
-                tags$li("Use Time_* as xmetric for the x axis."),
-                tags$li("Probably better to disable log-scaling"),
-                tags$li("If you do not see any curves then disable some filters.")
-            ))
+            tagList(
+                p("Histograms help to analyze data of the validation code."),
+                tags$ul(
+                    tags$li("Use Time_* as xmetric for the x axis."),
+                    tags$li("Probably better to disable log-scaling"),
+                    tags$li("If you do not see any curves then disable some filters.")
+                )
+            )
         else if(input$sPlotType == "Lines")
-            p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd).",
+            tagList(
+                p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd)."),
                 tags$ul(
                     tags$li("If you see jumps then you should enable more filters or use the 'Inspect' option."),
                     tags$li("Points are always drawn when the degree of freedom in the diagram is greater than 2."),
                     tags$li("no (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)"),
                     tags$li("when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)")
-            ))
+                )
+            )
         else if(input$sPlotType == "Points")
             p("This plot type allows to analyze the raw data by plotting each measure point. It helps analyzing the results of the validation code.")
 
