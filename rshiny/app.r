@@ -375,7 +375,6 @@ ui <- fluidPage(
 
     tags$style(type="text/css",
                "label {font-size: 12px;}",
-               "p {font-weight: bold;}",
                "h3 {margin-top: 0px;}",
                ".checkbox {vertical-align: top; margin-top: 0px; padding-top: 0px;}"
                ),
