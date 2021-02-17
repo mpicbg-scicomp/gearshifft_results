@@ -373,11 +373,7 @@ ui <- fluidPage(
     theme=shinytheme("simplex"),
     title=page_title,
 
-    tags$style(type="text/css",
-               "label {font-size: 12px;}",
-               "h3 {margin-top: 0px;}",
-               ".checkbox {vertical-align: top; margin-top: 0px; padding-top: 0px;}"
-               ),
+    tags$style(type="text/css", "h3 {margin-top: 0px;}"),
 
     h1(page_title),
     p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures. Get ",
