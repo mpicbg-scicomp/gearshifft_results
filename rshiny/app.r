@@ -317,9 +317,19 @@ server <- function(input, output, session) {
     #
     output$sHint <- renderUI({
         if(input$sPlotType == "Histogram")
-            p("Histograms help to analyze data of the validation code.", HTML("<ul><li>Use Time_* as xmetric for the x axis.</li><li>Probably better to disable log-scaling</li><li>If you do not see any curves then disable some filters.</li></ul>"))
+            p("Histograms help to analyze data of the validation code.", tags$ul(
+                tags$li("Use Time_* as xmetric for the x axis."),
+                tags$li("Probably better to disable log-scaling"),
+                tags$li("If you do not see any curves then disable some filters.")
+            ))
         else if(input$sPlotType == "Lines")
-            p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd).", HTML("<ul><li>If you see jumps then you should enable more filters or use the 'Inspect' option.</li><li>Points are always drawn when the degree of freedom in the diagram is greater than 2.</li><li>no (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)</li><li>when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)</li></ul>"))
+            p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd).",
+                tags$ul(
+                    tags$li("If you see jumps then you should enable more filters or use the 'Inspect' option."),
+                    tags$li("Points are always drawn when the degree of freedom in the diagram is greater than 2."),
+                    tags$li("no (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)"),
+                    tags$li("when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)")
+            ))
         else if(input$sPlotType == "Points")
             p("This plot type allows to analyze the raw data by plotting each measure point. It helps analyzing the results of the validation code.")
 
@@ -442,11 +452,13 @@ ui <- fluidPage(
                      uiOutput("sHint"))),
         ## Table panel
         tabPanel("Table",
-                 
                  br(),
                  DT::dataTableOutput("sTable"),
                  p("A table aggregates the data and shows the average of the runs for each benchmark."),
-                 div(HTML("<ul><li>xmoi: xmetric of interest (xmetric='nbytes' -> signal size in MiB)</li><li>ymoi: ymetric of interest</li></ul>"))
+                 div(tags$ul(
+                    tags$li("xmoi: xmetric of interest (xmetric='nbytes' -> signal size in MiB)"),
+                    tags$li("ymoi: ymetric of interest")
+                 ))
                  ),
         ## Table panel
         tabPanel("Raw Data",
