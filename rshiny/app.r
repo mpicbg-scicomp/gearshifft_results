@@ -388,21 +388,15 @@ ui <- fluidPage(
                           column(3, selectInput("sData1", "Data 1", c("gearshifft", "User"))),
                           column(9, uiOutput("fInput1"))
                       ),
-                      fluidRow(
-                          checkboxGroupInput("tags1", "Tags", arch_lib_tags, inline=T)),
-                      fluidRow(
-                          column(8,textInput("sCustomName1","Custom curve label (leave it empty for default label)",""))
-                      )
+                      fluidRow(column(12, checkboxGroupInput("tags1", "Tags", arch_lib_tags, inline=T))),
+                      fluidRow(column(8,textInput("sCustomName1","Custom curve label (leave it empty for default label)","")))
                       )),
             column(6, wellPanel( fluidRow(
                           column(3, selectInput("sData2", "Data 2", c("gearshifft", "User", "none"), selected="none")),
                           column(9, uiOutput("fInput2"))
                       ),
-                      fluidRow(
-                          checkboxGroupInput("tags2", "Tags", arch_lib_tags, inline=T )),
-                      fluidRow(
-                          column(8,textInput("sCustomName2","Custom curve label (leave it empty for default label)",""))
-                      )
+                      fluidRow(column(12, checkboxGroupInput("tags2", "Tags", arch_lib_tags, inline=T ))),
+                      fluidRow(column(8,textInput("sCustomName2","Custom curve label (leave it empty for default label)","")))
                       ))
         ),
 
