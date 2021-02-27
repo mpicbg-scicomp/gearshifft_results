@@ -372,7 +372,8 @@ ui <- fluidPage(
     tags$style(
         type="text/css",
         "h3 { margin-top: 0px; }",
-        ".tab-content { padding-top: 19px; }"
+        ".tab-content { padding-top: 19px; }",
+        ".shiny-plot-output { margin-bottom: 19px; }"
     ),
 
     h1(page_title),
@@ -429,9 +430,7 @@ ui <- fluidPage(
     tabsetPanel(
         ## Plot panel
         tabPanel("Plot",
-
                  plotOutput("sPlot"),
-                 br(),
                  wellPanel(
                      h3("Plot Options"),
                      fluidRow(
