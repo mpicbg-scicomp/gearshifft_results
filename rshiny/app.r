@@ -331,8 +331,8 @@ server <- function(input, output, session) {
                 tags$ul(
                     tags$li("If you see jumps then you should enable more filters or use the 'Inspect' option."),
                     tags$li("Points are always drawn when the degree of freedom in the diagram is greater than 2."),
-                    tags$li("no (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)"),
-                    tags$li("when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)")
+                    tags$li("No (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)"),
+                    tags$li("When x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)")
                 )
             )
         else if(input$sPlotType == "Points")
@@ -380,8 +380,9 @@ ui <- fluidPage(
     ),
 
     h1(page_title),
-    p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures. Get ",
-      a(href="https://github.com/mpicbg-scicomp/gearshifft/", "gearshifft on github.")),
+    p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures.",
+      a(href="https://github.com/mpicbg-scicomp/gearshifft/", "Get gearshifft on GitHub.")
+    ),
     hr(),
 
     wellPanel(
@@ -464,8 +465,8 @@ ui <- fluidPage(
     ## fluidRow(verbatimTextOutput("log"))
     ##    mainPanel(plotOutput("distPlot"))
     ##  )
-    
-    span("This tool is powered by R Shiny Server.")
+
+    p("This tool is powered by R Shiny Server.")
 )
 
 ## will look for ui.R and server.R when reloading browser page, so you have to run
