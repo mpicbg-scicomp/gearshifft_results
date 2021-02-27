@@ -290,28 +290,24 @@ server <- function(input, output, session) {
             output$table4 <- renderTable({
                 key_value_list_to_table(header2$table2)
             })
-            wellPanel(
-                h4(input_files[1]),
-                fluidRow(
-                    column(4, tableOutput("table1")),
-                    column(4, tableOutput("table2"))
-                ),
-                h4(input_files[2]),
-                fluidRow(
-                    column(4, tableOutput("table3")),
-                    column(4, tableOutput("table4"))
-                )
-            )
-        } else {
-
-            wellPanel(
-                h4(input_files[1]),
-                fluidRow(
-                    column(4, tableOutput("table1")),
-                    column(4, tableOutput("table2"))
-                )
-            )
         }
+
+        wellPanel(
+            h4(input_files[1]),
+            fluidRow(
+                column(4, tableOutput("table1")),
+                column(4, tableOutput("table2"))
+            ),
+            if (length(input_files) > 1) {
+                tagList(
+                    h4(input_files[2]),
+                    fluidRow(
+                        column(4, tableOutput("table3")),
+                        column(4, tableOutput("table4"))
+                    )
+                )
+            }
+        )
     })
 
     #
