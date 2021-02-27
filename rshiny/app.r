@@ -291,7 +291,6 @@ server <- function(input, output, session) {
                 key_value_list_to_table(header2$table2)
             })
             wellPanel(
-                br(),
                 h4(input_files[1]),
                 fluidRow(
                     column(4, tableOutput("table1")),
@@ -306,7 +305,6 @@ server <- function(input, output, session) {
         } else {
 
             wellPanel(
-                br(),
                 h4(input_files[1]),
                 fluidRow(
                     column(4, tableOutput("table1")),
