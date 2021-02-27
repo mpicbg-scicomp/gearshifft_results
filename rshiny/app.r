@@ -262,11 +262,13 @@ server <- function(input, output, session) {
     })
 
     output$sPlotOptions <- renderUI({
-        if(input$sPlotType == "Histogram")
+        if(input$sPlotType == "Histogram") {
             column(2, numericInput("sHistBins", "Bins", 200, min=10, max=1000))
-        else if(input$sPlotType == "Lines") {
-            fluidRow(column(1, checkboxInput("sUsepoints", "Draw Points")),
-                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean"),selected="median+quartiles")))
+        } else if(input$sPlotType == "Lines") {
+            tagList(
+                column(1, checkboxInput("sUsepoints", "Draw Points")),
+                column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean"),selected="median+quartiles"))
+            )
         }
     })
 
