@@ -375,7 +375,11 @@ ui <- fluidPage(
     theme=shinytheme("simplex"),
     title=page_title,
 
-    tags$style(type="text/css", "h3 {margin-top: 0px;}"),
+    tags$style(
+        type="text/css",
+        "h3 { margin-top: 0px; }",
+        ".tab-content { padding-top: 19px; }"
+    ),
 
     h1(page_title),
     p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures. Get ",
@@ -404,12 +408,12 @@ ui <- fluidPage(
 
         h3("Filtered by"),
         tabsetPanel(id="sFilterMask",
-            tabPanel("Presets", br(),
+            tabPanel("Presets",
                      fluidRow(column(6,
                        selectInput("sFilter", "Preset",
                                    filter_presets_gui
                                    )))),
-            tabPanel("Custom", br(),
+            tabPanel("Custom",
         fluidRow(
             column(2, selectInput("sInplace", "Placeness", c("-","Inplace","Outplace"),selected="Inplace")),
             column(2, selectInput("sComplex", "Complex", c("-","Complex","Real"), selected="Real")),
@@ -431,7 +435,6 @@ ui <- fluidPage(
         ## Plot panel
         tabPanel("Plot",
 
-                 br(),
                  plotOutput("sPlot"),
                  br(),
                  wellPanel(
@@ -448,7 +451,6 @@ ui <- fluidPage(
                      uiOutput("sHint"))),
         ## Table panel
         tabPanel("Table",
-                 br(),
                  DT::dataTableOutput("sTable"),
                  p("A table aggregates the data and shows the average of the runs for each benchmark."),
                  tags$ul(
@@ -456,16 +458,8 @@ ui <- fluidPage(
                     tags$li("ymoi: ymetric of interest"))
                  ),
         ## Table panel
-        tabPanel("Raw Data",
-                 
-                 br(),
-                 DT::dataTableOutput("sTableRaw")
-                 ),
-        tabPanel("Info",
-                 
-                 br(),
-                 uiOutput("sInfo")                 
-                 )
+        tabPanel("Raw Data", DT::dataTableOutput("sTableRaw")),
+        tabPanel("Info", uiOutput("sInfo"))
     ),
     hr(),
     
