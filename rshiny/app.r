@@ -369,11 +369,14 @@ ui <- fluidPage(
     theme=shinytheme("simplex"),
     title=page_title,
 
+    # own classes and ids start with gearshifft- as to not confuse them with bootstrap
     tags$style(
         type="text/css",
         "h3 { margin-top: 0px; }",
         ".tab-content { padding-top: 19px; }",
-        ".shiny-plot-output { margin-bottom: 19px; }"
+        ".shiny-plot-output { margin-bottom: 19px; }",
+        ".gearshifft-tags-grid .checkbox-inline { width: 100px; }",
+        ".gearshifft-tags-grid .checkbox-inline + .checkbox-inline { margin-left: 0; }"
     ),
 
     h1(page_title),
@@ -390,14 +393,14 @@ ui <- fluidPage(
                           column(3, selectInput("sData1", "Data 1", c("gearshifft", "User"))),
                           column(9, uiOutput("fInput1"))
                       ),
-                      fluidRow(column(12, checkboxGroupInput("tags1", "Tags", arch_lib_tags, inline=T))),
+                      fluidRow(column(12, checkboxGroupInput("tags1", "Tags", arch_lib_tags, inline=T) %>% tagAppendAttributes(class = "gearshifft-tags-grid"))),
                       fluidRow(column(8,textInput("sCustomName1","Curve label","", placeholder = "default label")))
                       )),
             column(6, wellPanel( fluidRow(
                           column(3, selectInput("sData2", "Data 2", c("gearshifft", "User", "none"), selected="none")),
                           column(9, uiOutput("fInput2"))
                       ),
-                      fluidRow(column(12, checkboxGroupInput("tags2", "Tags", arch_lib_tags, inline=T))),
+                      fluidRow(column(12, checkboxGroupInput("tags2", "Tags", arch_lib_tags, inline=T) %>% tagAppendAttributes(class = "gearshifft-tags-grid"))),
                       fluidRow(column(8,textInput("sCustomName2","Curve label","", placeholder = "default label")))
                       ))
         ),
