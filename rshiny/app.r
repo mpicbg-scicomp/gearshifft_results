@@ -46,11 +46,7 @@ filter_to_string <- function(filter) {
     filter$ratio <- ifelse( filter$ratio=="1", "(rel. to total time)", "" )
     filter$logx <- ifelse( filter$logx=="-", "-", paste0("logx=",filter$logx) )
     filter$logy <- ifelse( filter$logy=="-", "-", paste0("logy=",filter$logy) )
-    str <- do.call(paste, filter)
-    str <- gsub(" -D", "", str)
-    str <- gsub(" -", "", str)
-    str <- gsub(" Success", "", str)
-    str <- gsub(": \\|", ":", str)
+    str <- do.call(paste, filter) %>% gsub(" -D", "", .) %>% gsub(" -", "", .) %>% gsub(" Success", "", .) %>% gsub(": \\|", ":", .)
     return(str)
 }
 
