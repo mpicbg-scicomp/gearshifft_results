@@ -47,8 +47,10 @@ filter_to_string <- function(filter) {
     filter$logx <- ifelse( filter$logx=="-", "-", paste0("logx=",filter$logx) )
     filter$logy <- ifelse( filter$logy=="-", "-", paste0("logy=",filter$logy) )
     str <- do.call(paste, filter)
+    str <- gsub(" -D", "", str)
     str <- gsub(" -", "", str)
     str <- gsub(" Success", "", str)
+    str <- gsub(": \\|", ":", str)
     return(str)
 }
 
@@ -60,6 +62,7 @@ string_to_filter <- function(str) {
 }
 
 filter_presets_lines <- list()
+filter_presets_lines <- create_filter(filter_presets_lines, "-", "-", precision="-", kind="-", dim="-", xmetric="nbytes", ymetric="Time_Total", inspect="precision", run="Success", ratio="0")
 filter_presets_lines <- create_filter(filter_presets_lines, "Inplace", "Real", precision="-", kind="powerof2", dim="1", xmetric="nbytes", ymetric="Time_Total", inspect="precision", run="Success", ratio="0")
 filter_presets_lines <- create_filter(filter_presets_lines, "Inplace", "Real", "-", "powerof2", "1", "nbytes", "Time_Total", "precision", run="-", ratio="0")
 filter_presets_lines <- create_filter(filter_presets_lines, "Inplace", "Real", "-", "powerof2", "1", "nbytes", "Time_FFT", "precision", "Success", ratio="0")
