@@ -2,6 +2,7 @@
 
 library(ggplot2)
 library(shiny)
+library(shinythemes)
 
 cat(file=stderr(), "---\n")
 
@@ -45,9 +46,7 @@ filter_to_string <- function(filter) {
     filter$ratio <- ifelse( filter$ratio=="1", "(rel. to total time)", "" )
     filter$logx <- ifelse( filter$logx=="-", "-", paste0("logx=",filter$logx) )
     filter$logy <- ifelse( filter$logy=="-", "-", paste0("logy=",filter$logy) )
-    str <- do.call(paste, filter)
-    str <- gsub(" -", "", str)
-    str <- gsub(" Success", "", str)
+    str <- do.call(paste, filter) %>% gsub(" -D", "", .) %>% gsub(" -", "", .) %>% gsub(" Success", "", .) %>% gsub(": \\|", ":", .)
     return(str)
 }
 
@@ -59,6 +58,7 @@ string_to_filter <- function(str) {
 }
 
 filter_presets_lines <- list()
+filter_presets_lines <- create_filter(filter_presets_lines, "-", "-", precision="-", kind="-", dim="-", xmetric="nbytes", ymetric="Time_Total", inspect="precision", run="Success", ratio="0")
 filter_presets_lines <- create_filter(filter_presets_lines, "Inplace", "Real", precision="-", kind="powerof2", dim="1", xmetric="nbytes", ymetric="Time_Total", inspect="precision", run="Success", ratio="0")
 filter_presets_lines <- create_filter(filter_presets_lines, "Inplace", "Real", "-", "powerof2", "1", "nbytes", "Time_Total", "precision", run="-", ratio="0")
 filter_presets_lines <- create_filter(filter_presets_lines, "Inplace", "Real", "-", "powerof2", "1", "nbytes", "Time_FFT", "precision", "Success", ratio="0")
@@ -84,7 +84,7 @@ filter_presets_gui[['Points']] <- filter_to_string(filter_presets_points)
 
 filter_by_tags <- function(flist, tags) {
 
-    if( is.null(tags)==FALSE )
+    if(!is.null(tags))
     {
         flist <- gearshifft_flist
         matches <- Reduce(intersect, lapply(tags, grep, flist, perl = TRUE))
@@ -137,7 +137,7 @@ get_args <- function(input) {
 server <- function(input, output, session) {
     observe({
         filter <- string_to_filter(input$sFilter)
-        if(is.null(filter)==FALSE) {
+        if(!is.null(filter)) {
             updateSelectInput(session, "sInplace", selected = filter$inplace)
             updateSelectInput(session, "sComplex", selected = filter$complex)
             updateSelectInput(session, "sPrec", selected = filter$precision)
@@ -155,7 +155,7 @@ server <- function(input, output, session) {
     })
     
     observe({
-        if (input$sSpeedup==TRUE && (is.null(input$sData2) || input$sData2=="none"))
+        if (input$sSpeedup && (is.null(input$sData2) || input$sData2=="none"))
             updateCheckboxInput(session, "sSpeedup", value=FALSE)
     })
     
@@ -164,7 +164,7 @@ server <- function(input, output, session) {
             return()
         flist <- gearshifft_flist
         flist <- filter_by_tags(flist, input$tags1) ## files matching tags like cuda p100 ...
-        if(flist1_selected %in% flist == FALSE) ## if flist1_selected is not in (filtered) flist, disable it
+        if(flist1_selected %!in% flist) ## if flist1_selected is not in (filtered) flist, disable it
             flist1_selected<<-""
         switch(input$sData1,
                "gearshifft" = selectInput("file1", "File", choices=flist, selected=flist1_selected),
@@ -177,7 +177,7 @@ server <- function(input, output, session) {
             return()
         flist <- gearshifft_flist
         flist <- filter_by_tags(flist, input$tags2)
-        if(flist2_selected %in% flist == FALSE)
+        if(flist2_selected %!in% flist)
             flist2_selected<<-""
         switch(input$sData2,
                "gearshifft" = selectInput("file2", "File", choices=flist, selected=flist2_selected),
@@ -261,11 +261,13 @@ server <- function(input, output, session) {
     })
 
     output$sPlotOptions <- renderUI({
-        if(input$sPlotType == "Histogram")
+        if(input$sPlotType == "Histogram") {
             column(2, numericInput("sHistBins", "Bins", 200, min=10, max=1000))
-        else if(input$sPlotType == "Lines") {
-            fluidRow(column(1, checkboxInput("sUsepoints", "Draw Points")),
-                     column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean"),selected="median+quartiles")))
+        } else if(input$sPlotType == "Lines") {
+            tagList(
+                column(1, checkboxInput("sUsepoints", "Draw Points")),
+                column(2, selectInput("sVisualization", "Visualization", choices=c("median+quartiles","mean+sd","median","mean"),selected="median+quartiles"))
+            )
         }
     })
 
@@ -287,38 +289,47 @@ server <- function(input, output, session) {
             output$table4 <- renderTable({
                 key_value_list_to_table(header2$table2)
             })
-            wellPanel(
-                br(),
-                h4(input_files[1]),
-                fluidRow(
-                    column(4, tableOutput("table1")),
-                    column(4, tableOutput("table2"))
-                ),
-                h4(input_files[2]),
-                fluidRow(
-                    column(4, tableOutput("table3")),
-                    column(4, tableOutput("table4"))
-                )
-            )
-        } else {
-
-            wellPanel(
-                br(),
-                h4(input_files[1]),
-                fluidRow(
-                    column(4, tableOutput("table1")),
-                    column(4, tableOutput("table2"))
-                )
-            )
         }
+
+        wellPanel(
+            h4(input_files[1]),
+            fluidRow(
+                column(4, tableOutput("table1")),
+                column(4, tableOutput("table2"))
+            ),
+            if (length(input_files) > 1) {
+                tagList(
+                    h4(input_files[2]),
+                    fluidRow(
+                        column(4, tableOutput("table3")),
+                        column(4, tableOutput("table4"))
+                    )
+                )
+            }
+        )
     })
 
     #
     output$sHint <- renderUI({
         if(input$sPlotType == "Histogram")
-            p("Histograms help to analyze data of the validation code.", HTML("<ul><li>Use Time_* as xmetric for the x axis.</li><li>Probably better to disable log-scaling</li><li>If you do not see any curves then disable some filters.</li></ul>"))
+            tagList(
+                p("Histograms help to analyze data of the validation code."),
+                tags$ul(
+                    tags$li("Use Time_* as xmetric for the x axis."),
+                    tags$li("Probably better to disable log-scaling"),
+                    tags$li("If you do not see any curves then disable some filters.")
+                )
+            )
         else if(input$sPlotType == "Lines")
-            p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd).", HTML("<ul><li>If you see jumps then you should enable more filters or use the 'Inspect' option.</li><li>Points are always drawn when the degree of freedom in the diagram is greater than 2.</li><li>no (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)</li><li>when x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)</li></ul>"))
+            tagList(
+                p("Measurements are visualized by their medians including the 25% to 75% quantiles or by the means including the error bars with standard deviation (sd)."),
+                tags$ul(
+                    tags$li("If you see jumps then you should enable more filters or use the 'Inspect' option."),
+                    tags$li("Points are always drawn when the degree of freedom in the diagram is greater than 2."),
+                    tags$li("No (error) bars are shown when speedup option is enabled (speedup is computed on the medians or means depending on the visualization option)"),
+                    tags$li("When x-range or y-range is used '0' is only valid for non-logarithmic scales ('0,0' means automatic range)")
+                )
+            )
         else if(input$sPlotType == "Points")
             p("This plot type allows to analyze the raw data by plotting each measure point. It helps analyzing the results of the validation code.")
 
@@ -334,19 +345,43 @@ server <- function(input, output, session) {
 
 time_columns <- c("Time_Total","Time_FFT","Time_iFFT", "Time_Download", "Time_Upload", "Time_Allocation", "Time_PlanInitFwd", "Time_PlanInitInv", "Time_PlanDestroy")
 
+# Tags to choose architectures and/or libraries. Format: "ui string" = "regex for file name"
+arch_lib_tags <- c("CUDA"="cuda",
+                   "clFFT"="clfft",
+                   "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
+                   "MKL"="mkl",
+                   "ESSL"="esslfftw",
+                   "ArmPL"="armplfftw",
+                   "Tesla K80"="K80",
+                   "GTX 1080"="GTX1080",
+                   "Tesla P100"="P100",
+                   "Tesla V100"="V100",
+                   "Haswell"="haswell",
+                   "Broadwell"="broadwell",
+                   "Skylake"="skylake",
+                   "POWER 9"="power9",
+                   "Cortex A72"="cortex-a72")
+
+page_title <- "gearshifft | Benchmark Analysis Tool"
+
 ui <- fluidPage(
+    theme=shinytheme("simplex"),
+    title=page_title,
 
-    theme="simplex.min.css",
-    tags$style(type="text/css",
-               "label {font-size: 12px;}",
-               "p {font-weight: bold;}",
-               "h3 {margin-top: 0px;}",
-               ".checkbox {vertical-align: top; margin-top: 0px; padding-top: 0px;}"
-               ),
+    # own classes and ids start with gearshifft- as to not confuse them with bootstrap
+    tags$style(
+        type="text/css",
+        "h3 { margin-top: 0px; }",
+        ".tab-content { padding-top: 19px; }",
+        ".shiny-plot-output { margin-bottom: 19px; }",
+        ".gearshifft-tags-grid .checkbox-inline { width: 100px; }",
+        ".gearshifft-tags-grid .checkbox-inline + .checkbox-inline { margin-left: 0; }"
+    ),
 
-    h1("gearshifft | Benchmark Analysis Tool"),
-    p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures. Get ",
-      a(href="https://github.com/mpicbg-scicomp/gearshifft/", "gearshifft on github.")),
+    h1(page_title),
+    p("gearshifft is an FFT benchmark suite to evaluate the performance of various FFT libraries on different architectures.",
+      a(href="https://github.com/mpicbg-scicomp/gearshifft/", "Get gearshifft on GitHub.")
+    ),
     hr(),
 
     wellPanel(
@@ -357,66 +392,26 @@ ui <- fluidPage(
                           column(3, selectInput("sData1", "Data 1", c("gearshifft", "User"))),
                           column(9, uiOutput("fInput1"))
                       ),
-                      fluidRow(
-                          checkboxGroupInput("tags1", "Tags",
-                                             c("CUDA"="cuda",
-                                               "clFFT"="clfft",
-                                               "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
-                                               "MKL"="mkl",
-                                               "ESSL"="esslfftw",
-                                               "ArmPL"="armplfftw",
-                                               "Tesla K80"="K80",
-                                               "GTX 1080"="GTX1080",
-                                               "Tesla P100"="P100",
-                                               "Tesla V100"="V100",
-                                               "Haswell"="haswell",
-                                               "Broadwell"="broadwell",
-                                               "Skylake"="skylake",
-                                               "POWER 9"="power9",
-                                               "Cortex A72"="cortex-a72"),
-                                             inline=T
-                                             )),
-                      fluidRow(
-                          column(8,textInput("sCustomName1","Custom curve label (leave it empty for default label)",""))
-                      )
+                      fluidRow(column(12, checkboxGroupInput("tags1", "Tags", arch_lib_tags, inline=T) %>% tagAppendAttributes(class = "gearshifft-tags-grid"))),
+                      fluidRow(column(8,textInput("sCustomName1","Curve label","", placeholder = "default label")))
                       )),
             column(6, wellPanel( fluidRow(
                           column(3, selectInput("sData2", "Data 2", c("gearshifft", "User", "none"), selected="none")),
                           column(9, uiOutput("fInput2"))
                       ),
-                      fluidRow(
-                          checkboxGroupInput("tags2", "Tags",
-                                             c("CUDA"="cuda",
-                                               "clFFT"="clfft",
-                                               "FFTW"="^(?!.*(essl|armpl|wrappers)).*fftw.*",
-                                               "MKL"="mkl",
-                                               "ESSL"="esslfftw",
-                                               "ArmPL"="armplfftw",
-                                               "Tesla K80"="K80",
-                                               "GTX 1080"="GTX1080",
-                                               "Tesla P100"="P100",
-                                               "Tesla V100"="V100",
-                                               "Haswell"="haswell",
-                                               "Broadwell"="broadwell",
-                                               "Skylake"="skylake",
-                                               "POWER 9"="power9",
-                                               "Cortex A72"="cortex-a72"),
-                                             inline=T
-                                             )),
-                      fluidRow(
-                          column(8,textInput("sCustomName2","Custom curve label (leave it empty for default label)",""))
-                      )
+                      fluidRow(column(12, checkboxGroupInput("tags2", "Tags", arch_lib_tags, inline=T) %>% tagAppendAttributes(class = "gearshifft-tags-grid"))),
+                      fluidRow(column(8,textInput("sCustomName2","Curve label","", placeholder = "default label")))
                       ))
         ),
 
         h3("Filtered by"),
         tabsetPanel(id="sFilterMask",
-            tabPanel("Presets", br(),
+            tabPanel("Presets",
                      fluidRow(column(6,
                        selectInput("sFilter", "Preset",
                                    filter_presets_gui
                                    )))),
-            tabPanel("Custom", br(),
+            tabPanel("Custom",
         fluidRow(
             column(2, selectInput("sInplace", "Placeness", c("-","Inplace","Outplace"),selected="Inplace")),
             column(2, selectInput("sComplex", "Complex", c("-","Complex","Real"), selected="Real")),
@@ -437,10 +432,7 @@ ui <- fluidPage(
     tabsetPanel(
         ## Plot panel
         tabPanel("Plot",
-
-                 br(),
                  plotOutput("sPlot"),
-                 br(),
                  wellPanel(
                      h3("Plot Options"),
                      fluidRow(
@@ -455,31 +447,23 @@ ui <- fluidPage(
                      uiOutput("sHint"))),
         ## Table panel
         tabPanel("Table",
-                 
-                 br(),
                  DT::dataTableOutput("sTable"),
                  p("A table aggregates the data and shows the average of the runs for each benchmark."),
-                 div(HTML("<ul><li>xmoi: xmetric of interest (xmetric='nbytes' -> signal size in MiB)</li><li>ymoi: ymetric of interest</li></ul>"))
+                 tags$ul(
+                    tags$li("xmoi: xmetric of interest (xmetric='nbytes' -> signal size in MiB)"),
+                    tags$li("ymoi: ymetric of interest"))
                  ),
         ## Table panel
-        tabPanel("Raw Data",
-                 
-                 br(),
-                 DT::dataTableOutput("sTableRaw")
-                 ),
-        tabPanel("Info",
-                 
-                 br(),
-                 uiOutput("sInfo")                 
-                 )
+        tabPanel("Raw Data", DT::dataTableOutput("sTableRaw")),
+        tabPanel("Info", uiOutput("sInfo"))
     ),
     hr(),
     
     ## fluidRow(verbatimTextOutput("log"))
     ##    mainPanel(plotOutput("distPlot"))
     ##  )
-    
-    span("This tool is powered by R Shiny Server.")
+
+    p("This tool is powered by R Shiny Server.")
 )
 
 ## will look for ui.R and server.R when reloading browser page, so you have to run

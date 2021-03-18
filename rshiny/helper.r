@@ -4,15 +4,17 @@ library(plyr)
 library(dplyr)
 library(scales)
 
+'%!in%' <- Negate('%in%')
+
 ## header with meta information about results
 headers<-list()
 
 create_key_value_list <- function(keys, values) {
     keys <- as.vector(keys)
     values <- as.vector(values)
-    if(is.null(dim(keys))==FALSE && dim(keys)[2]>1)
+    if(!is.null(dim(keys)) && dim(keys)[2]>1)
         keys <- t(keys)
-    if(is.null(dim(values))==FALSE && dim(values)[2]>1)
+    if(!is.null(dim(values)) && dim(values)[2]>1)
         values <- t(values)
     result <- trimws(gsub(";","",values))
     names(result) <- trimws(gsub(";","",keys))
@@ -56,7 +58,7 @@ get_gearshifft_header <- function(fname) {
             ## identify device by hostname on taurus
             taurusi_no <- as.numeric(regmatches(table1$Hostname, regexpr("[0-9]+", table1$Hostname)))
             ## https://doc.zih.tu-dresden.de/hpc-wiki/bin/view/Compendium/SystemTaurus
-            if( is.null(taurusi_no)==F && taurusi_no>4000 && taurusi_no<=6612 )
+            if(!is.null(taurusi_no) && taurusi_no>4000 && taurusi_no<=6612)
                 table1$Device <- "Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz"
         }
 
@@ -222,7 +224,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         filtered_by <- c(filtered_by, filter_prec)
     }
 
-    if ( nchar(filter_kind) > 0 && !("all" %in% filter_kind) ){
+    if (nchar(filter_kind) > 0 && "all" %!in% filter_kind){
         succeeded <- succeeded %>% filter(kind == filter_kind)
         cat("filtered for kind == ",filter_kind,": \t",nrow(succeeded),"\n")
         filtered_by <- c(filtered_by, filter_kind)
@@ -234,7 +236,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
         filtered_by <- c(filtered_by, paste(filter_dim,"D",sep=""))
     }
     if( args$speedup && nchar(filter_prec)==0
-       && length(headers)==2 && any(headers[[1]]$float16, headers[[2]]$float16)==FALSE ) {
+       && length(headers)==2 && !any(headers[[1]]$float16, headers[[2]]$float16)) {
         succeeded <- succeeded %>% filter(precision != "float16")
 
     }
@@ -281,7 +283,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
 
 ##############################################################################
                                         # extracting xmetric expression
-    if(any(grepl(paste0("^",args$xmetric),data_colnames)) == FALSE){
+    if(!any(grepl(paste0("^",args$xmetric),data_colnames))){
 
         stop(paste(args$xmetric, "for x not found in available columns \n",data_colnames,"\n"))
     }
@@ -327,7 +329,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
                   )
 
 #### data2$y(x)/data1$y(x)
-    if(args$speedup==TRUE) {
+    if(args$speedup) {
         d1 <- filter(data_for_plotting, .file_id==1)
         d2 <- filter(data_for_plotting, .file_id==2)
         if(nrow(d2)>0) {
@@ -354,7 +356,7 @@ get_gearshifft_tables <- function(gearshifft_data, args) {
     tables$reduced <- data_for_plotting
     tables$name_of_xmetric <- name_of_xmetric
     tables$name_of_ymetric <- name_of_ymetric
-    if( args$notitle == F ) {
+    if(!args$notitle) {
         tables$hardware <- succeeded_reduced %>% distinct(hardware) %>% pull()
         tables$hardware <- paste0(tables$hardware, collapse=" vs. ")
 
@@ -386,10 +388,8 @@ plot_gearshifft <- function(tables,
     data_for_plotting <- tables$reduced
     name_of_xmetric <- tables$name_of_xmetric
     name_of_ymetric <- tables$name_of_ymetric
-    vis_median <- ifelse( grepl("median",visualization), T, F )
-    vis_bars <- ifelse(grepl("\\+",visualization) && freqpoly==F && usepointsraw==F && speedup==F,
-                       TRUE,
-                       FALSE )
+    vis_median <- grepl("median",visualization)
+    vis_bars <- grepl("\\+",visualization) && !freqpoly && !usepointsraw && !speedup
     moi_vis <- ifelse(vis_median,"moi_median","moi_mean")
     tables$title <- paste(tables$title, "|", visualization)
 
@@ -476,7 +476,7 @@ plot_gearshifft <- function(tables,
             moi_plot <- moi_plot + geom_errorbar(aes(ymin = moi_quantile25,
                                                      ymax = moi_quantile75),
                                                  width=0.25, linetype =1)
-        } else if( vis_bars && vis_median==FALSE ) {
+        } else if(vis_bars && !vis_median) {
             moi_plot <- moi_plot + geom_errorbar(aes(ymin = moi_mean - moi_stddev,
                                                      ymax = moi_mean + moi_stddev),
                                                  width=0.25, linetype =1)
