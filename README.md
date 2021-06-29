@@ -30,7 +30,7 @@ The results obtained with [gearshifft](https://github.com/mpicbg-scicomp/gearshi
 
 ## Online R-Shiny App
 
-[**=> Go to the online data analysis tool**!](https://www.kcod.de/gearshifft/)
+[**=> Go to the online data analysis tool**!](https://gearshifft.hzdr.de/)
 
 ## Local R-Shiny App
 
